@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/css/signup.css" />
+</head>
+<body>
+    <header id="navbar">
+        <nav class="navbar">
+        <div class="navbar-left">
+            <img src="" alt="Logo" class="navbar-logo" />
+            <a href ="/index.html">AccessPoint</a>
+        </div>
+        <div class="navbar-right">
+            <a id="admin-link" href="/html/admin.html" style="display:none;">Admin</a>
+            <a href="/index.html">Home</a>
+            <a href="/html/controllers.html">Controllers</a>
+            <a href="/html/games.html">Games</a>
+            <a href="/html/signup.html" id="auth-link">Sign Up</a>
+        </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="logo">
+            <h1>Create Account</h1>
+            <p>Join AccessPoint Today!</p>
+        </div>
+
+        <div id="errorMessage" style="display: none;"></div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="you@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Create a strong password">
+            </div>
+
+            <button type="submit" class="btn" id="submitButton">Create Account</button>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+        <div class="footer-text">
+            Already have an account? <a href="/html/signin.html">Sign in</a>
+        </div>
+    </div>
+
+    <script type="module" src="/javascript/pages/signupPage.js"></script>
+    <script type="module" src="/javascript/components/navbar.js" defer></script>
+</body>
+</html>

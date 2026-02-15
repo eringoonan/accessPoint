@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Access Point</title>
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+<body>
+  <!-- Header/navbar always visible at top -->
+  <header id="navbar">
+    <nav class="navbar">
+      <div class="navbar-left">
+        <img src="" alt="Logo" class="navbar-logo" />
+        <a href ="/index.html">AccessPoint</a>
+      </div>
+      <div class="navbar-right">
+        <a id="admin-link" href="/html/admin.html" style="display:none;">Admin</a>
+        <a href="/index.html">Home</a>
+        <a href="/html/controllers.html">Controllers</a>
+        <a href="/html/games.html">Games</a>
+        <a href="/html/signup.html" id="auth-link">Sign Up</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Home</h1>
+    <p>Welcome to Access Point.</p>
+  </main>
+
+  <!-- Dynamic JS to update Sign Up → Profile -->
+  <script type="module" src="/javascript/pages/homePage.js"></script>
+  <script type="module" src="/javascript/components/navbar.js" defer></script>
+</body>
+</html>

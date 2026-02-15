@@ -1,0 +1,62 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: access_point_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: access_point
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: access_point_api
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app                 # Mount local backend code
+      - backend_node_modules:/app/node_modules  # Named volume for node_modules
+    command: npx nodemon server.js
+
+  frontend:
+    build: ./frontend
+    container_name: access_point_web
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/usr/share/nginx/html   
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: access_point_phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+
+volumes:
+  db_data:
+  backend_node_modules:

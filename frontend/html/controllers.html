@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controllers - AccessPoint</title>
+    <link rel="stylesheet" href="/css/controllers.css" />
+</head>
+<body>
+    <header id="navbar">
+        <nav class="navbar">
+            <div class="navbar-left">
+                <img src="" alt="Logo" class="navbar-logo" />
+                <a href="/index.html">AccessPoint</a>
+            </div>
+            <div class="navbar-right">
+                <a id="admin-link" href="/html/admin.html" style="display:none;">Admin</a>
+                <a href="/index.html">Home</a>
+                <a href="/html/controllers.html">Controllers</a>
+                <a href="/html/games.html">Games</a>
+                <a href="/html/signup.html" id="auth-link">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Game Controllers</h1>
+            <p>Browse our collection of adaptive gaming controllers</p>
+        </div>
+
+        <div id="loading" class="loading">
+            <p>Loading controllers...</p>
+        </div>
+
+        <div id="error-message" class="error-message" style="display: none;"></div>
+
+        <div id="controllers-grid" class="controllers-grid">
+            <!-- Controller cards will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <script type="module" src="/javascript/pages/controllersPage.js"></script>
+    <script type="module" src="/javascript/components/navbar.js" defer></script>
+</body>
+</html>

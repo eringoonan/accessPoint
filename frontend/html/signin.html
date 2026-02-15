@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="/css/signin.css" />
+</head>
+<body>
+    <header id="navbar">
+        <nav class="navbar">
+        <div class="navbar-left">
+            <img src="" alt="Logo" class="navbar-logo" />
+            <a href ="/index.html">AccessPoint</a>
+        </div>
+        <div class="navbar-right">
+            <a id="admin-link" href="/html/admin.html" style="display:none;">Admin</a>
+            <a href="/index.html">Home</a>
+            <a href="/html/controllers.html">Controllers</a>
+            <a href="/html/games.html">Games</a>
+            <a href="/html/signup.html" id="auth-link">Sign Up</a>
+        </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="logo">
+            <h1>Sign In</h1>
+            <p>Enter details below</p>
+        </div>
+
+        <div id="errorMessage" style="display: none;"></div>
+
+        <form id="signinForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter Password" autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn" id="submitButton">Sign In</button>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+        <div class="footer-text">
+            Don't have an account? <a href="/html/signup.html">Sign Up</a>
+        </div>
+    </div>
+
+    <script type="module" src="/javascript/pages/signinPage.js"></script>
+    <script type="module" src="/javascript/components/navbar.js" defer></script>
+</body>
+</html>

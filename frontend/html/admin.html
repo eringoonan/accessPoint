@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Access Point - Admin Panel</title>
+  <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body>
+  <!-- Header/navbar always visible at top -->
+  <header id="navbar">
+    <nav class="navbar">
+      <div class="navbar-left">
+        <img src="" alt="Logo" class="navbar-logo" />
+        <a href="/index.html">AccessPoint</a>
+      </div>
+      <div class="navbar-right">
+        <a id="admin-link" href="/html/admin.html" style="display:none;">Admin</a>
+        <a href="/index.html">Home</a>
+        <a href="/html/controllers.html">Controllers</a>
+        <a href="/html/games.html">Games</a>
+        <a href="/html/signup.html" id="auth-link">Sign Up</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Admin Panel</h1>
+    <p class="admin-subtitle">Add new controllers and games to the database</p>
+
+    <div class="admin-container">
+      <!-- Add Controller Form -->
+      <div class="admin-box">
+        <h2>Add New Controller</h2>
+        <form id="controller-form" class="admin-form">
+          <div class="form-group">
+            <label for="controller-name">Controller Name *</label>
+            <input type="text" id="controller-name" name="controller_name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="manufacturer">Manufacturer *</label>
+            <input type="text" id="manufacturer" name="manufacturer" required />
+          </div>
+
+          <div class="form-group">
+            <label for="controller-type">Controller Type *</label>
+            <input type="text" id="controller-type" name="controller_type" required placeholder="e.g., Gamepad, Adaptive, Flight Stick" />
+          </div>
+
+          <div class="form-group">
+            <label for="product-url">Product URL</label>
+            <input type="url" id="product-url" name="product_url" placeholder="https://" />
+          </div>
+
+          <div class="form-group">
+            <label for="image-url">Image URL</label>
+            <input type="url" id="image-url" name="image_url" placeholder="https://" />
+          </div>
+
+          <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" id="price" name="price" step="0.01" min="0" placeholder="0.00" />
+          </div>
+
+          <div class="form-group">
+            <label for="release-date">Release Date</label>
+            <input type="date" id="release-date" name="release_date" />
+          </div>
+
+          <div class="form-group">
+            <label class="section-label">Compatible Platforms *</label>
+            <p class="helper-text">Select platforms and optionally add compatibility details</p>
+            <div class="checkbox-expandable-grid">
+              <div class="platform-item" data-platform="Android">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Android" class="platform-checkbox" />
+                    <span>Android</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="android-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="android-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Android" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Android" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="iOS">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="iOS" class="platform-checkbox" />
+                    <span>iOS</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="ios-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="ios-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_iOS" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_iOS" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Linux">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Linux" class="platform-checkbox" />
+                    <span>Linux</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="linux-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="linux-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Linux" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Linux" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="macOS">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="macOS" class="platform-checkbox" />
+                    <span>macOS</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="macos-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="macos-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_macOS" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_macOS" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Nintendo 3DS">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Nintendo 3DS" class="platform-checkbox" />
+                    <span>Nintendo 3DS</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="3ds-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="3ds-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Nintendo 3DS" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Nintendo 3DS" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Nintendo Switch">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Nintendo Switch" class="platform-checkbox" />
+                    <span>Nintendo Switch</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="switch-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="switch-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Nintendo Switch" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Nintendo Switch" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Nintendo Switch Lite">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Nintendo Switch Lite" class="platform-checkbox" />
+                    <span>Nintendo Switch Lite</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="switchlite-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="switchlite-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Nintendo Switch Lite" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Nintendo Switch Lite" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="PlayStation 3">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="PlayStation 3" class="platform-checkbox" />
+                    <span>PlayStation 3</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="ps3-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="ps3-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_PlayStation 3" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_PlayStation 3" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="PlayStation 4">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="PlayStation 4" class="platform-checkbox" />
+                    <span>PlayStation 4</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="ps4-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="ps4-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_PlayStation 4" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_PlayStation 4" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="PlayStation 5">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="PlayStation 5" class="platform-checkbox" />
+                    <span>PlayStation 5</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="ps5-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="ps5-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_PlayStation 5" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_PlayStation 5" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="PlayStation Vita">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="PlayStation Vita" class="platform-checkbox" />
+                    <span>PlayStation Vita</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="psvita-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="psvita-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_PlayStation Vita" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_PlayStation Vita" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Steam Deck">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Steam Deck" class="platform-checkbox" />
+                    <span>Steam Deck</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="steamdeck-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="steamdeck-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Steam Deck" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Steam Deck" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Wii U">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Wii U" class="platform-checkbox" />
+                    <span>Wii U</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="wiiu-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="wiiu-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Wii U" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Wii U" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Windows">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Windows" class="platform-checkbox" />
+                    <span>Windows</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="windows-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="windows-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Windows" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Windows" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Xbox 360">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Xbox 360" class="platform-checkbox" />
+                    <span>Xbox 360</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="xbox360-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="xbox360-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Xbox 360" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Xbox 360" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Xbox One">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Xbox One" class="platform-checkbox" />
+                    <span>Xbox One</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="xboxone-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="xboxone-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Xbox One" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Xbox One" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="platform-item" data-platform="Xbox Series X/S">
+                <div class="platform-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="platforms" value="Xbox Series X/S" class="platform-checkbox" />
+                    <span>Xbox Series X/S</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="xboxseriesxs-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="platform-details" id="xboxseriesxs-details" style="display: none;">
+                  <input type="text" placeholder="Compatibility notes (optional)" class="detail-input" name="platform_notes_Xbox Series X/S" />
+                  <label class="adapter-label">
+                    <input type="checkbox" name="platform_adapter_Xbox Series X/S" />
+                    <span>Requires adapter</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="section-label">Functional Needs Supported *</label>
+            <p class="helper-text">Select needs and optionally specify suitability level</p>
+            <div class="checkbox-expandable-grid">
+              <div class="need-item" data-need="Controller Mounting Needed">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Controller Mounting Needed" class="need-checkbox" />
+                    <span>Controller Mounting Needed</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="mount-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="mount-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Controller Mounting Needed">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Poor</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="need-item" data-need="Customisable Inputs">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Customisable Inputs" class="need-checkbox" />
+                    <span>Customisable Inputs</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="custom-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="custom-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Customisable Inputs">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="need-item" data-need="Head/Mouth Control">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Head/Mouth Control" class="need-checkbox" />
+                    <span>Head/Mouth Control</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="headmouth-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="headmouth-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Head/Mouth Control">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="need-item" data-need="Large Buttons Needed">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Large Buttons Needed" class="need-checkbox" />
+                    <span>Large Buttons Needed</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="largebuttons-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="largebuttons-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Large Buttons Needed">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="need-item" data-need="Limited Fine Motor Control">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Limited Fine Motor Control" class="need-checkbox" />
+                    <span>Limited Fine Motor Control</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="finemotor-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="finemotor-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Limited Fine Motor Control">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="need-item" data-need="Limited Reach">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Limited Reach" class="need-checkbox" />
+                    <span>Limited Reach</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="reach-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="reach-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Limited Reach">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="need-item" data-need="Quick Fatigue">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Quick Fatigue" class="need-checkbox" />
+                    <span>Quick Fatigue</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="fatigue-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="fatigue-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Quick Fatigue">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="need-item" data-need="Repetitive Action Difficult">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Repetitive Action Difficult" class="need-checkbox" />
+                    <span>Repetitive Action Difficult</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="repetitive-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="repetitive-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Repetitive Action Difficult">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="need-item" data-need="Single-Handed Use">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Single-Handed Use" class="need-checkbox" />
+                    <span>Single-Handed Use</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="singlehand-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="singlehand-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Single-Handed Use">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="need-item" data-need="Weak Grip">
+                <div class="need-checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="functional_needs" value="Weak Grip" class="need-checkbox" />
+                    <span>Weak Grip</span>
+                  </label>
+                  <button type="button" class="details-toggle" data-target="weakgrip-details" disabled>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 4v8M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="need-details" id="weakgrip-details" style="display: none;">
+                  <select class="suitability-select" name="need_suitability_Weak Grip">
+                    <option value="">Suitability level (optional)</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Add Controller</button>
+            <button type="reset" class="btn-secondary">Clear Form</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Add Game Form -->
+      <div class="admin-box">
+        <h2>Add New Game</h2>
+        <form id="game-form" class="admin-form">
+          <div class="form-group">
+            <label for="game-title">Game Title *</label>
+            <input type="text" id="game-title" name="title" required />
+          </div>
+
+          <div class="form-group">
+            <label for="developer">Developer *</label>
+            <input type="text" id="developer" name="developer" required />
+          </div>
+
+          <div class="form-group">
+            <label for="genre">Genre ID *</label>
+            <input type="number" id="genre" name="genre_id" required min="1" />
+          </div>
+
+          <div class="form-group">
+            <label for="game-release-date">Release Date</label>
+            <input type="date" id="game-release-date" name="release_date" />
+          </div>
+
+          <div class="form-group">
+            <label for="store-url">Store URL</label>
+            <input type="url" id="store-url" name="store_url" placeholder="https://" />
+          </div>
+
+          <div class="form-group">
+            <label for="official-website">Official Website</label>
+            <input type="url" id="official-website" name="official_website" placeholder="https://" />
+          </div>
+
+          <div class="form-group">
+            <label for="cover-image-url">Cover Image URL</label>
+            <input type="url" id="cover-image-url" name="cover_image_url" placeholder="https://" />
+          </div>
+
+          <div class="form-group">
+            <label class="section-label">Available Platforms *</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Android" />
+                <span>Android</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="iOS" />
+                <span>iOS</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Linux" />
+                <span>Linux</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="macOS" />
+                <span>macOS</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Nintendo 3DS" />
+                <span>Nintendo 3DS</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Nintendo Switch" />
+                <span>Nintendo Switch</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Nintendo Switch Lite" />
+                <span>Nintendo Switch Lite</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="PlayStation 3" />
+                <span>PlayStation 3</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="PlayStation 4" />
+                <span>PlayStation 4</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="PlayStation 5" />
+                <span>PlayStation 5</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="PlayStation Vita" />
+                <span>PlayStation Vita</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Steam Deck" />
+                <span>Steam Deck</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Wii U" />
+                <span>Wii U</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Windows" />
+                <span>Windows</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Xbox 360" />
+                <span>Xbox 360</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Xbox One" />
+                <span>Xbox One</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="game_platforms" value="Xbox Series X/S" />
+                <span>Xbox Series X/S</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="section-label">Accessibility Features *</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Audio Cues" />
+                <span>Audio Cues</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Auto-Aim Assistance" />
+                <span>Auto-Aim Assistance</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Closed Captions" />
+                <span>Closed Captions</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Colorblind Modes" />
+                <span>Colorblind Modes</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Difficulty Adjustment" />
+                <span>Difficulty Adjustment</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="High Contrast Mode" />
+                <span>High Contrast Mode</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Motion Reduction" />
+                <span>Motion Reduction</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="One-Handed Mode" />
+                <span>One-Handed Mode</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Pause Anytime" />
+                <span>Pause Anytime</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Remappable Controls" />
+                <span>Remappable Controls</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Screen Reader Support" />
+                <span>Screen Reader Support</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Subtitles" />
+                <span>Subtitles</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Text Size Scaling" />
+                <span>Text Size Scaling</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Toggle Controls" />
+                <span>Toggle Controls</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="accessibility_features" value="Visual Cues" />
+                <span>Visual Cues</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Add Game</button>
+            <button type="reset" class="btn-secondary">Clear Form</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Admin page JavaScript -->
+  <script type="module" src="/javascript/pages/adminPage.js"></script>
+  <script type="module" src="/javascript/components/navbar.js" defer></script>
+</body>
+</html>
