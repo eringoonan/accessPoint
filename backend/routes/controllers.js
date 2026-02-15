@@ -7,50 +7,105 @@ const router = express.Router();
 
 console.log("controllers router loaded");
 
+// updated route to return all controllers, with more information
 router.get('/', (req, res) => {
+  // query to return all controller info
   const sql = `
     SELECT 
-      c.*,
-
-      GROUP_CONCAT(DISTINCT p.platform_name) AS platforms,
-      GROUP_CONCAT(DISTINCT fn.need_name) AS needs
-
+      c.controller_id,
+      c.controller_name,
+      c.manufacturer,
+      c.controller_type,
+      c.price,
+      c.release_date,
+      c.product_url,
+      c.image_url
     FROM controllers c
-
-    LEFT JOIN controller_platforms cp 
-      ON c.controller_id = cp.controller_id
-      AND cp.compatibility_notes = 'native support'
-
-    LEFT JOIN platforms p 
-      ON cp.platform_id = p.platform_id
-
-    LEFT JOIN controller_needs cn 
-      ON c.controller_id = cn.controller_id
-    LEFT JOIN functional_needs fn 
-      ON cn.need_id = fn.need_id
-
-    GROUP BY c.controller_id
   `;
 
-    db.query(sql, (err, results) => {
+  // run query and error handling
+  db.query(sql, (err, controllers) => {
+    if (err) {
+      console.error('DB error fetching controllers:', err);
+      return res.status(500).json({ error: 'Failed to fetch controllers' });
+    }
+
+    if (controllers.length === 0) {
+      return res.json([]);
+    }
+
+    // seperate queries to collect platforms/needs for each controller
+    let completed = 0;
+    const enrichedControllers = [];
+
+    // for each instance of controller
+    controllers.forEach((controller) => {
+      const controllerId = controller.controller_id; // define controller id
+      
+      // query platforms with details
+      const platformSql = `
+        SELECT 
+          p.platform_name,
+          cp.compatibility_notes,
+          cp.requires_adapter
+        FROM controller_platforms cp
+        JOIN platforms p ON cp.platform_id = p.platform_id
+        WHERE cp.controller_id = ?
+      `;
+
+      // run query and error handling
+      db.query(platformSql, [controllerId], (err, platforms) => {
         if (err) {
-            console.error('DB error fetching controllers:', err);
-            return res.status(500).json({ error: 'Failed to fetch controllers' });
+          console.error('Error fetching platforms for controller', controllerId, ':', err);
+          platforms = [];
         }
 
-        // Convert CSV strings into real arrays
-        const formatted = results.map(row => ({
-            ...row,
-            platforms: row.platforms 
-                ? row.platforms.split(',') 
-                : [],
-            needs: row.needs 
-                ? row.needs.split(',') 
-                : []
-        }));
+        console.log(`Controller ${controllerId} platforms:`, platforms); // debug
 
-        res.json(formatted);
+        // query needs with details
+        const needsSql = `
+          SELECT 
+            fn.need_name,
+            cn.suitability
+          FROM controller_needs cn
+          JOIN functional_needs fn ON cn.need_id = fn.need_id
+          WHERE cn.controller_id = ?
+        `;
+
+        // run query and error handling
+        db.query(needsSql, [controllerId], (err, needs) => {
+          if (err) {
+            console.error('Error fetching needs for controller', controllerId, ':', err);
+            needs = [];
+          }
+
+          console.log(`Controller ${controllerId} needs:`, needs); // debug
+
+          // combine data
+          enrichedControllers.push({
+            ...controller,
+            platforms: platforms.map(p => ({
+              name: p.platform_name,
+              compatibility_notes: p.compatibility_notes,
+              requires_adapter: p.requires_adapter === 1 || p.requires_adapter === true
+            })),
+            needs: needs.map(n => ({
+              name: n.need_name,
+              suitability: n.suitability
+            }))
+          });
+
+          completed++;
+          
+          // respond when all controllers processed
+          if (completed === controllers.length) {
+            console.log('Sending enriched controllers:', enrichedControllers.length);
+            res.json(enrichedControllers); // return array of completed controllers
+          }
+        });
+      });
     });
+  });
 });
 
 router.post('/user-controllers', authMiddleware, (req, res) => {

@@ -1,4 +1,4 @@
-// javascript/utils/featureMapper.js
+// javascript/components/featureMapper.js
 export const FEATURE_MAP = {
   "Limited Fine Motor Control": "Precision-Friendly",
   "Weak Grip": "Low Grip Required",
