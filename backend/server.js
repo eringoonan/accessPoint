@@ -4,7 +4,8 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const controllersRoutes = require("./routes/controllers");
 const authRoutes = require("./routes/auth");
-const profileDetailsRouter = require('./routes/profileDetails');
+const profileDetailsRoutes = require('./routes/profileDetails');
+const conditionRoutes = require('./routes/conditions');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,7 +31,9 @@ app.use((req, res, next) => {
 // ---- ROUTES ----
 app.use("/controllers", controllersRoutes);
 app.use("/auth", authRoutes);
-app.use('/profileDetails', profileDetailsRouter);
+app.use('/profileDetails', profileDetailsRoutes);
+app.use('/conditions', conditionRoutes);
+
 
 // ---- START SERVER ----
 app.listen(PORT, () => {

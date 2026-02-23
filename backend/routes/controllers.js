@@ -9,7 +9,7 @@ console.log("controllers router loaded");
 
 // updated route to return all controllers, with more information
 router.get('/', (req, res) => {
-  // query to return all controller info
+  // query to return all controller info INCLUDING primary_platform
   const sql = `
     SELECT 
       c.controller_id,
@@ -19,7 +19,8 @@ router.get('/', (req, res) => {
       c.price,
       c.release_date,
       c.product_url,
-      c.image_url
+      c.image_url,
+      c.primary_platform
     FROM controllers c
   `;
 
@@ -40,7 +41,7 @@ router.get('/', (req, res) => {
 
     // for each instance of controller
     controllers.forEach((controller) => {
-      const controllerId = controller.controller_id; // define controller id
+      const controllerId = controller.controller_id;
       
       // query platforms with details
       const platformSql = `
@@ -53,14 +54,13 @@ router.get('/', (req, res) => {
         WHERE cp.controller_id = ?
       `;
 
-      // run query and error handling
       db.query(platformSql, [controllerId], (err, platforms) => {
         if (err) {
           console.error('Error fetching platforms for controller', controllerId, ':', err);
           platforms = [];
         }
 
-        console.log(`Controller ${controllerId} platforms:`, platforms); // debug
+        console.log(`Controller ${controllerId} platforms:`, platforms);
 
         // query needs with details
         const needsSql = `
@@ -72,16 +72,15 @@ router.get('/', (req, res) => {
           WHERE cn.controller_id = ?
         `;
 
-        // run query and error handling
         db.query(needsSql, [controllerId], (err, needs) => {
           if (err) {
             console.error('Error fetching needs for controller', controllerId, ':', err);
             needs = [];
           }
 
-          console.log(`Controller ${controllerId} needs:`, needs); // debug
+          console.log(`Controller ${controllerId} needs:`, needs);
 
-          // combine data
+          // combine data - primary_platform is now included
           enrichedControllers.push({
             ...controller,
             platforms: platforms.map(p => ({
@@ -100,7 +99,7 @@ router.get('/', (req, res) => {
           // respond when all controllers processed
           if (completed === controllers.length) {
             console.log('Sending enriched controllers:', enrichedControllers.length);
-            res.json(enrichedControllers); // return array of completed controllers
+            res.json(enrichedControllers);
           }
         });
       });

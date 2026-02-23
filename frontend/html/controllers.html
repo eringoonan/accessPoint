@@ -31,6 +31,30 @@
 
         <!-- Filter Section -->
         <div class="filters-section">
+            <!-- NEW: Condition Filter -->
+            <div class="filter-group">
+                <label for="condition-filter">Medical Conditions</label>
+                <div class="custom-select">
+                    <button type="button" class="select-button" id="condition-filter-btn">
+                        <span class="select-text">Select Conditions</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M2 4l4 4 4-4"/>
+                        </svg>
+                    </button>
+                    <div class="select-dropdown" id="condition-dropdown">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Search conditions..." id="condition-search">
+                        </div>
+                        <div class="dropdown-options" id="condition-options">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                        <div class="dropdown-actions">
+                            <button type="button" class="clear-btn" id="clear-conditions">Clear All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="filter-group">
                 <label for="platform-filter">Platforms</label>
                 <div class="custom-select">
@@ -81,6 +105,7 @@
                 <label for="sort-filter">Sort By</label>
                 <select id="sort-filter" class="sort-select">
                     <option value="relevance">Relevance</option>
+                    <option value="match">Best Match</option>
                     <option value="price-low">Price: Low to High</option>
                     <option value="price-high">Price: High to Low</option>
                 </select>

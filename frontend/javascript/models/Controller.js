@@ -11,6 +11,7 @@ class Controller {
     release_date, 
     product_url, 
     image_url,
+    primary_platform,
     platforms,
     needs
   }) {
@@ -25,6 +26,7 @@ class Controller {
     this.releaseDate = release_date ? new Date(release_date) : null;
     this.productUrl = product_url || '#';
     this.imageUrl = image_url || '/assets/placeholder-controller.jpg';
+    this.primaryPlatform = primary_platform; // Store the primary platform name
 
     // normalise platforms and needs
     this.platforms = this._normalizePlatforms(platforms);
@@ -77,12 +79,19 @@ class Controller {
     return this.platforms.map(p => p.name);
   }
 
-  // get primary platform (first inserted)
-  // TO DO: ADD VARIABLE CALLED PRIMARY PLATFORM TO THE DB
+  // Get primary platform with details from platforms array
   getPrimaryPlatform() {
-    if (this.platforms.length === 0) return null;
-    // return last platform in array
-    return this.platforms[this.platforms.length - 1];
+    if (!this.primaryPlatform) return null;
+    
+    // Find the platform object that matches primaryPlatform name
+    const primaryPlatformObj = this.platforms.find(p => p.name === this.primaryPlatform);
+    
+    // If found, return the full object; otherwise return a basic object
+    return primaryPlatformObj || {
+      name: this.primaryPlatform,
+      compatibility_notes: null,
+      requires_adapter: false
+    };
   }
 
   // filter platforms that only have native support
@@ -147,7 +156,7 @@ class Controller {
     return `${this.manufacturer} ${this.type} controller${this.releaseDate ? ` - Released ${this.formattedReleaseDate()}` : ''}`;
   }
 
-  // Qunction to open product page
+  // function to open product page
   openProductPage() {
     if (this.productUrl && this.productUrl !== '#') {
       window.open(this.productUrl, '_blank');
@@ -158,12 +167,12 @@ class Controller {
 
   // debugging function
   debug() {
-    console.log(`   Controller: ${this.name} by ${this.manufacturer}, £${this.price}`);
+    console.log(`🕹️ Controller: ${this.name} by ${this.manufacturer}, £${this.price}`);
+    console.log(`   Primary Platform: ${this.primaryPlatform || 'None'}`);
     console.log(`   Platforms (${this.platforms.length}):`);
     this.platforms.forEach(p => {
       console.log(`     - ${p.name} ${p.requires_adapter ? '(requires adapter)' : '(native)'} - ${p.compatibility_notes || 'no notes'}`);
     });
-    console.log(`   Primary Platform: ${this.getPrimaryPlatform()?.name || 'None'}`);
     console.log(`   Needs (${this.needs.length}):`);
     this.needs.forEach(n => {
       console.log(`     - ${n.name} ${n.suitability ? `(${n.suitability})` : '(no suitability)'}`);

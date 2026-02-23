@@ -1,13 +1,16 @@
 // pages/controllersPage.js
 import Controller from '../models/Controller.js';
 import { getAllControllers, saveUserController } from '../api/controllersApi.js';
+import { getAllConditions } from '../api/conditionsApi.js';
 import { FEATURE_MAP } from '../components/featureMapper.js';
 
 // Global state
-let allControllers = []; // Will store Controller instances
+let allControllers = [];
+let allConditions = [];
+let selectedConditions = [];
 let selectedPlatforms = [];
 let selectedFeatures = [];
-let requiresAdapter = 'all'; // 'all', 'native', 'adapter'
+let requiresAdapter = 'all';
 let currentSort = 'relevance';
 
 // Function to create a controller card
@@ -15,13 +18,11 @@ function createControllerCard(controller) {
     const card = document.createElement('div');
     card.className = 'controller-card';
 
-    // Get primary platform (last in array = first added)
     const primaryPlatform = controller.getPrimaryPlatform();
     const primaryPlatformDisplay = primaryPlatform 
         ? `${primaryPlatform.name}${primaryPlatform.requires_adapter ? ' (adapter)' : ''}` 
         : '';
 
-    // First two features (mapped needs)
     const features = controller.friendlyNeeds().slice(0, 2);
 
     card.innerHTML = `
@@ -67,7 +68,30 @@ function createControllerCard(controller) {
 function filterAndSortControllers() {
     let filtered = [...allControllers];
 
-    // Filter by platforms (checks if controller supports ANY selected platform)
+    // Filter by conditions
+    if (selectedConditions.length > 0) {
+        const conditionNeeds = new Set();
+        selectedConditions.forEach(conditionId => {
+            const condition = allConditions.find(c => c.condition_id === conditionId);
+            if (condition) {
+                condition.needs.forEach(need => conditionNeeds.add(need.name));
+            }
+        });
+
+        filtered = filtered.filter(ctrl => {
+            const controllerNeedNames = ctrl.getNeedNames();
+            return Array.from(conditionNeeds).some(need => 
+                controllerNeedNames.includes(need)
+            );
+        });
+
+        // Score each controller based on importance × suitability
+        filtered.forEach(ctrl => {
+            ctrl._conditionScore = calculateConditionScore(ctrl);
+        });
+    }
+
+    // Filter by platforms
     if (selectedPlatforms.length > 0) {
         filtered = filtered.filter(ctrl => {
             const platformNames = ctrl.getPlatformNames();
@@ -79,14 +103,12 @@ function filterAndSortControllers() {
 
     // Filter by adapter requirement
     if (requiresAdapter === 'native') {
-        // Only show controllers with at least one native (no adapter) platform
         filtered = filtered.filter(ctrl => ctrl.getNativePlatforms().length > 0);
     } else if (requiresAdapter === 'adapter') {
-        // Only show controllers that work with adapters
         filtered = filtered.filter(ctrl => ctrl.getAdapterPlatforms().length > 0);
     }
 
-    // Filter by features (using friendly names)
+    // Filter by features
     if (selectedFeatures.length > 0) {
         filtered = filtered.filter(ctrl => {
             const controllerFriendlyNeeds = ctrl.friendlyNeeds();
@@ -98,21 +120,57 @@ function filterAndSortControllers() {
 
     // Sort
     if (currentSort === 'price-low') {
-        filtered.sort((a, b) => {
-            const priceA = a.price || 0;
-            const priceB = b.price || 0;
-            return priceA - priceB;
-        });
+        filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
     } else if (currentSort === 'price-high') {
-        filtered.sort((a, b) => {
-            const priceA = a.price || 0;
-            const priceB = b.price || 0;
-            return priceB - priceA;
-        });
+        filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (currentSort === 'relevance' && selectedConditions.length > 0) {
+        // When conditions are selected, sort by condition score (highest first)
+        filtered.sort((a, b) => (b._conditionScore || 0) - (a._conditionScore || 0));
     }
 
     displayControllers(filtered);
     updateActiveFilters();
+}
+
+// Calculate match score based on importance × suitability
+function calculateConditionScore(controller) {
+    if (selectedConditions.length === 0) return 0;
+
+    const IMPORTANCE_WEIGHTS = {
+        'critical': 10,
+        'recommended': 5,
+        'optional': 2
+    };
+
+    const SUITABILITY_WEIGHTS = {
+        'excellent': 10,
+        'good': 7,
+        'fair': 4,
+        'poor': 1
+    };
+
+    let totalScore = 0;
+
+    selectedConditions.forEach(conditionId => {
+        const condition = allConditions.find(c => c.condition_id === conditionId);
+        if (!condition) return;
+
+        condition.needs.forEach(conditionNeed => {
+            const needName = conditionNeed.name;
+            const importance = conditionNeed.importance;
+            const importanceWeight = IMPORTANCE_WEIGHTS[importance] || 1;
+
+            // Find matching controller need
+            const controllerNeed = controller.needs.find(n => n.name === needName);
+            
+            if (controllerNeed && controllerNeed.suitability) {
+                const suitabilityWeight = SUITABILITY_WEIGHTS[controllerNeed.suitability.toLowerCase()] || 0;
+                totalScore += importanceWeight * suitabilityWeight;
+            }
+        });
+    });
+
+    return totalScore;
 }
 
 // Display controllers
@@ -139,7 +197,7 @@ function displayControllers(controllers) {
 // Update active filters display
 function updateActiveFilters() {
     const activeFiltersDiv = document.getElementById('active-filters');
-    const hasFilters = selectedPlatforms.length > 0 || selectedFeatures.length > 0 || requiresAdapter !== 'all';
+    const hasFilters = selectedConditions.length > 0 || selectedPlatforms.length > 0 || selectedFeatures.length > 0 || requiresAdapter !== 'all';
 
     if (!hasFilters) {
         activeFiltersDiv.style.display = 'none';
@@ -148,6 +206,20 @@ function updateActiveFilters() {
 
     activeFiltersDiv.style.display = 'flex';
     activeFiltersDiv.innerHTML = '<span class="filter-label">Active Filters:</span>';
+
+    // Add condition tags
+    selectedConditions.forEach(conditionId => {
+        const condition = allConditions.find(c => c.condition_id === conditionId);
+        if (!condition) return;
+        
+        const tag = document.createElement('span');
+        tag.className = 'filter-tag';
+        tag.innerHTML = `
+            ${condition.condition_name}
+            <button class="remove-filter" data-type="condition" data-value="${conditionId}">&times;</button>
+        `;
+        activeFiltersDiv.appendChild(tag);
+    });
 
     // Add platform tags
     selectedPlatforms.forEach(platform => {
@@ -188,7 +260,9 @@ function updateActiveFilters() {
             const type = btn.getAttribute('data-type');
             const value = btn.getAttribute('data-value');
             
-            if (type === 'platform') {
+            if (type === 'condition') {
+                removeConditionFilter(parseInt(value));
+            } else if (type === 'platform') {
                 removePlatformFilter(value);
             } else if (type === 'feature') {
                 removeFeatureFilter(value);
@@ -215,19 +289,28 @@ function initializeFilters() {
     const features = new Set();
 
     allControllers.forEach(ctrl => {
-        // Add platform names
         ctrl.getPlatformNames().forEach(p => {
             if (p && p.trim()) platforms.add(p);
         });
         
-        // Add friendly feature names
         ctrl.friendlyNeeds().forEach(f => {
             if (f && f.trim()) features.add(f);
         });
     });
 
-    console.log('Available platforms:', Array.from(platforms));
-    console.log('Available features:', Array.from(features));
+    // Populate condition options
+    const conditionOptions = document.getElementById('condition-options');
+    conditionOptions.innerHTML = '';
+    
+    allConditions.sort((a, b) => a.condition_name.localeCompare(b.condition_name)).forEach(condition => {
+        const option = document.createElement('label');
+        option.className = 'dropdown-option';
+        option.innerHTML = `
+            <input type="checkbox" value="${condition.condition_id}" class="condition-checkbox">
+            <span>${condition.condition_name}</span>
+        `;
+        conditionOptions.appendChild(option);
+    });
 
     // Populate platform options
     const platformOptions = document.getElementById('platform-options');
@@ -262,6 +345,17 @@ function initializeFilters() {
 
 // Setup filter event listeners
 function setupFilterListeners() {
+    // Condition dropdown toggle
+    const conditionBtn = document.getElementById('condition-filter-btn');
+    const conditionDropdown = document.getElementById('condition-dropdown');
+    
+    conditionBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        conditionDropdown.classList.toggle('show');
+        document.getElementById('platform-dropdown').classList.remove('show');
+        document.getElementById('feature-dropdown').classList.remove('show');
+    });
+
     // Platform dropdown toggle
     const platformBtn = document.getElementById('platform-filter-btn');
     const platformDropdown = document.getElementById('platform-dropdown');
@@ -269,6 +363,7 @@ function setupFilterListeners() {
     platformBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         platformDropdown.classList.toggle('show');
+        conditionDropdown.classList.remove('show');
         document.getElementById('feature-dropdown').classList.remove('show');
     });
 
@@ -279,18 +374,35 @@ function setupFilterListeners() {
     featureBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         featureDropdown.classList.toggle('show');
+        conditionDropdown.classList.remove('show');
         platformDropdown.classList.remove('show');
     });
 
     // Close dropdowns when clicking outside
     document.addEventListener('click', () => {
+        conditionDropdown.classList.remove('show');
         platformDropdown.classList.remove('show');
         featureDropdown.classList.remove('show');
     });
 
     // Prevent dropdown from closing when clicking inside
+    conditionDropdown.addEventListener('click', (e) => e.stopPropagation());
     platformDropdown.addEventListener('click', (e) => e.stopPropagation());
     featureDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+    // Condition checkboxes
+    document.querySelectorAll('.condition-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            const conditionId = parseInt(checkbox.value);
+            if (checkbox.checked) {
+                selectedConditions.push(conditionId);
+            } else {
+                selectedConditions = selectedConditions.filter(id => id !== conditionId);
+            }
+            updateConditionButtonText();
+            filterAndSortControllers();
+        });
+    });
 
     // Platform checkboxes
     document.querySelectorAll('.platform-checkbox').forEach(checkbox => {
@@ -319,6 +431,13 @@ function setupFilterListeners() {
     });
 
     // Clear buttons
+    document.getElementById('clear-conditions').addEventListener('click', () => {
+        selectedConditions = [];
+        document.querySelectorAll('.condition-checkbox').forEach(cb => cb.checked = false);
+        updateConditionButtonText();
+        filterAndSortControllers();
+    });
+
     document.getElementById('clear-platforms').addEventListener('click', () => {
         selectedPlatforms = [];
         document.querySelectorAll('.platform-checkbox').forEach(cb => cb.checked = false);
@@ -340,6 +459,10 @@ function setupFilterListeners() {
     });
 
     // Search filters
+    document.getElementById('condition-search').addEventListener('input', (e) => {
+        filterDropdownOptions(e.target.value, '.condition-checkbox');
+    });
+
     document.getElementById('platform-search').addEventListener('input', (e) => {
         filterDropdownOptions(e.target.value, '.platform-checkbox');
     });
@@ -360,6 +483,18 @@ function filterDropdownOptions(searchTerm, checkboxClass) {
 }
 
 // Update button text
+function updateConditionButtonText() {
+    const btn = document.querySelector('#condition-filter-btn .select-text');
+    if (selectedConditions.length === 0) {
+        btn.textContent = 'Select Conditions';
+    } else if (selectedConditions.length === 1) {
+        const condition = allConditions.find(c => c.condition_id === selectedConditions[0]);
+        btn.textContent = condition ? condition.condition_name : 'Select Conditions';
+    } else {
+        btn.textContent = `${selectedConditions.length} Conditions`;
+    }
+}
+
 function updatePlatformButtonText() {
     const btn = document.querySelector('#platform-filter-btn .select-text');
     if (selectedPlatforms.length === 0) {
@@ -383,6 +518,14 @@ function updateFeatureButtonText() {
 }
 
 // Remove individual filters
+function removeConditionFilter(conditionId) {
+    selectedConditions = selectedConditions.filter(id => id !== conditionId);
+    const checkbox = document.querySelector(`.condition-checkbox[value="${conditionId}"]`);
+    if (checkbox) checkbox.checked = false;
+    updateConditionButtonText();
+    filterAndSortControllers();
+}
+
 function removePlatformFilter(platform) {
     selectedPlatforms = selectedPlatforms.filter(p => p !== platform);
     const checkbox = document.querySelector(`.platform-checkbox[value="${platform}"]`);
@@ -401,10 +544,12 @@ function removeFeatureFilter(feature) {
 
 // Clear all filters
 function clearAllFilters() {
+    selectedConditions = [];
     selectedPlatforms = [];
     selectedFeatures = [];
     requiresAdapter = 'all';
-    document.querySelectorAll('.platform-checkbox, .feature-checkbox').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.condition-checkbox, .platform-checkbox, .feature-checkbox').forEach(cb => cb.checked = false);
+    updateConditionButtonText();
     updatePlatformButtonText();
     updateFeatureButtonText();
     filterAndSortControllers();
@@ -438,15 +583,20 @@ window.saveController = async function(controllerId) {
     }
 };
 
-// Load controllers from backend
+// Load controllers and conditions from backend
 async function loadControllers() {
     try {
-        const controllersData = await getAllControllers();
+        const [controllersData, conditionsData] = await Promise.all([
+            getAllControllers(),
+            getAllConditions()
+        ]);
         
-        // Convert raw data to Controller instances
         allControllers = controllersData.map(data => new Controller(data));
+        allConditions = conditionsData;
         
         console.log('Loaded controllers:', allControllers.length);
+        console.log('Loaded conditions:', allConditions.length);
+        
         if (allControllers.length > 0) {
             console.log('Sample controller:');
             allControllers[0].debug();

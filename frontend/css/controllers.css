@@ -522,3 +522,53 @@ header {
     padding: 5px 10px;
   }
 }
+
+/* Add these styles to your existing controllers.css */
+
+/* Condition-specific filter tag styling */
+.condition-tag {
+  background-color: #9c27b0; /* Purple for conditions */
+}
+
+/* Match badge on controller card */
+.match-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 6px 12px;
+  color: white;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.controller-image {
+  position: relative; /* Needed for absolute positioning of badge */
+}
+
+/* Update filter section for 4 filters */
+.filters-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .filters-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .filters-section {
+    grid-template-columns: 1fr;
+  }
+}
