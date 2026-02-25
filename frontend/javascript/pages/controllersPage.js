@@ -68,36 +68,27 @@ function createControllerCard(controller) {
 function filterAndSortControllers() {
     let filtered = [...allControllers];
 
-    // Filter by conditions
+    // Filter by conditions — controller must have a matching need for EVERY selected condition
     if (selectedConditions.length > 0) {
-        const conditionNeeds = new Set();
-        selectedConditions.forEach(conditionId => {
-            const condition = allConditions.find(c => c.condition_id === conditionId);
-            if (condition) {
-                condition.needs.forEach(need => conditionNeeds.add(need.name));
-            }
-        });
-
         filtered = filtered.filter(ctrl => {
             const controllerNeedNames = ctrl.getNeedNames();
-            return Array.from(conditionNeeds).some(need => 
-                controllerNeedNames.includes(need)
-            );
+            return selectedConditions.every(conditionId => {
+                const condition = allConditions.find(c => c.condition_id === conditionId);
+                if (!condition) return false;
+                return condition.needs.some(need => controllerNeedNames.includes(need.name));
+            });
         });
 
-        // Score each controller based on importance × suitability
         filtered.forEach(ctrl => {
             ctrl._conditionScore = calculateConditionScore(ctrl);
         });
     }
 
-    // Filter by platforms
+    // Filter by platforms — controller must support ALL selected platforms
     if (selectedPlatforms.length > 0) {
         filtered = filtered.filter(ctrl => {
             const platformNames = ctrl.getPlatformNames();
-            return selectedPlatforms.some(platform => 
-                platformNames.includes(platform)
-            );
+            return selectedPlatforms.every(platform => platformNames.includes(platform));
         });
     }
 
@@ -108,13 +99,11 @@ function filterAndSortControllers() {
         filtered = filtered.filter(ctrl => ctrl.getAdapterPlatforms().length > 0);
     }
 
-    // Filter by features
+    // Filter by features — controller must have ALL selected features
     if (selectedFeatures.length > 0) {
         filtered = filtered.filter(ctrl => {
             const controllerFriendlyNeeds = ctrl.friendlyNeeds();
-            return selectedFeatures.some(selectedFeature => 
-                controllerFriendlyNeeds.includes(selectedFeature)
-            );
+            return selectedFeatures.every(feature => controllerFriendlyNeeds.includes(feature));
         });
     }
 
