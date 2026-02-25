@@ -1,0 +1,1 @@
+// page for custom search for games/controllers

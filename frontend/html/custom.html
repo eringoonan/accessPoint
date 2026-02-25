@@ -2,16 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Access Point</title>
-  <link rel="stylesheet" href="/css/index.css" />
+  <title>Custom Search</title>
+  <link rel="stylesheet" href="/css/custom.css" />
 </head>
 <body>
-  <!-- Header/navbar always visible at top -->
   <header id="navbar">
     <nav class="navbar">
       <div class="navbar-left">
         <img src="" alt="Logo" class="navbar-logo" />
-        <a href ="/index.html">AccessPoint</a>
+        <a href="/index.html">AccessPoint</a>
       </div>
       <div class="navbar-right">
         <a id="admin-link" href="/html/admin.html" style="display:none;">Admin</a>
@@ -25,12 +24,27 @@
   </header>
 
   <main>
-    <h1>Home</h1>
-    <p>Welcome to Access Point.</p>
+    <section id="search-type-selection">
+      <h1>User Custom Search</h1>
+      <h2>Browse accessible controllers and games through user specific reccommendation search</h2>
+
+      <div class="search-options">
+        <button id="controller-search-btn">
+          Search Controllers
+        </button>
+
+        <button id="game-search-btn">
+          Search Games
+        </button>
+      </div>
+    </section>
+
+    <section id="custom-filter-container" style="display:none;">
+    </section>
+
   </main>
 
-  <!-- Dynamic JS to update Sign Up → Profile -->
-  <script type="module" src="/javascript/pages/homePage.js"></script>
+  <script type="module" src="/javascript/pages/customPage.js"></script>
   <script type="module" src="/javascript/components/navbar.js" defer></script>
 </body>
 </html>
