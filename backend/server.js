@@ -9,6 +9,10 @@ const conditionRoutes = require('./routes/conditions');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const path = require('path');
+
+// Serve all frontend files (HTML, JS, CSS, images)
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Parse JSON bodies FIRST
 app.use(express.json());

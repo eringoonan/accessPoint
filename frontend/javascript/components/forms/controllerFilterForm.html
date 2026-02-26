@@ -1,0 +1,51 @@
+<div id="controller-filter-form">
+  <h2>Custom Controller Search</h2>
+
+  <!-- Platforms -->
+  <fieldset class="filter-fieldset">
+    <legend>Preferred Platforms</legend>
+    <div class="searchable-dropdown" id="platforms-dropdown">
+      <input type="text" class="dropdown-search" placeholder="Search platforms..." autocomplete="off" />
+      <ul class="dropdown-list" id="platforms-list"></ul>
+    </div>
+    <div class="selected-tags" id="platforms-selected"></div>
+    <div class="fieldset-footer">
+      <label class="must-all-label">
+        <input type="checkbox" id="must-support-all"> Must support all selected platforms
+      </label>
+      <button type="button" class="clear-section-btn" data-target="platforms-dropdown">Clear</button>
+    </div>
+  </fieldset>
+
+  <!-- Functional Needs -->
+  <fieldset class="filter-fieldset">
+    <legend>Functional Needs</legend>
+    <div class="searchable-dropdown" id="needs-dropdown">
+      <input type="text" class="dropdown-search" placeholder="Search functional needs..." autocomplete="off" />
+      <ul class="dropdown-list" id="needs-list"></ul>
+    </div>
+    <div class="selected-tags" id="needs-selected"></div>
+    <div class="fieldset-footer">
+      <button type="button" class="clear-section-btn" data-target="needs-dropdown">Clear</button>
+    </div>
+  </fieldset>
+
+  <!-- Medical Conditions -->
+  <fieldset class="filter-fieldset">
+    <legend>Medical Conditions <span class="optional-label">(optional)</span></legend>
+    <button type="button" class="fill-from-profile" id="fill-from-profile-btn">Fill from profile</button>
+    <div class="searchable-dropdown" id="conditions-dropdown">
+      <input type="text" class="dropdown-search" placeholder="Search conditions..." autocomplete="off" />
+      <ul class="dropdown-list" id="conditions-list"></ul>
+    </div>
+    <div class="selected-tags" id="conditions-selected"></div>
+    <div class="fieldset-footer">
+      <button type="button" class="clear-section-btn" data-target="conditions-dropdown">Clear</button>
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="button" id="clear-all-btn">Clear All</button>
+    <button type="submit" id="controller-search-submit">Search</button>
+  </div>
+</div>
