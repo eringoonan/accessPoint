@@ -173,7 +173,7 @@ header {
   border-radius: 6px;
   border: 1px solid #e8e8e8;
   transition: border-color 0.2s ease;
-  overflow: hidden; /* Prevent content overflow */
+  overflow: hidden;
 }
 
 .platform-item:hover,
@@ -188,7 +188,7 @@ header {
   justify-content: space-between;
   padding: 8px 10px;
   gap: 8px;
-  min-height: 44px; /* Ensure consistent height */
+  min-height: 44px;
 }
 
 .platform-checkbox-row .checkbox-label,
@@ -196,7 +196,7 @@ header {
   flex: 1;
   padding: 0;
   margin: 0;
-  min-width: 0; /* Allow text to wrap properly */
+  min-width: 0;
 }
 
 .details-toggle {
@@ -205,7 +205,7 @@ header {
   border-radius: 4px;
   width: 28px;
   height: 28px;
-  min-width: 28px; /* Prevent shrinking */
+  min-width: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,7 +240,7 @@ header {
 
 .platform-details,
 .need-details {
-  display: none; /* Hidden by default */
+  display: none;
   padding: 0 10px 10px 10px;
   border-top: 1px solid #f0f0f0;
   animation: slideDown 0.2s ease;
@@ -266,7 +266,7 @@ header {
   font-family: inherit;
   margin-bottom: 6px;
   transition: border-color 0.2s ease;
-  box-sizing: border-box; /* Prevent overflow */
+  box-sizing: border-box;
 }
 
 .detail-input:focus {
@@ -306,7 +306,7 @@ header {
   background-color: white;
   cursor: pointer;
   transition: border-color 0.2s ease;
-  box-sizing: border-box; /* Prevent overflow */
+  box-sizing: border-box;
 }
 
 .suitability-select:focus {
@@ -314,7 +314,7 @@ header {
   border-color: #5dceac;
 }
 
-/* Checkbox Grid (for game platforms/features that don't need expandable details) */
+/* Checkbox Grid (game platforms/features) */
 .checkbox-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -398,6 +398,191 @@ header {
 .btn-secondary:hover {
   background-color: #e0e0e0;
   color: #444;
+}
+
+/* ── Tag Input Component ──────────────────────────────────────────────────── */
+
+.tag-input-wrapper {
+  position: relative;
+}
+
+.tag-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tag-search-input:focus {
+  outline: none;
+  border-color: #5dceac;
+  box-shadow: 0 0 0 3px rgba(93, 206, 172, 0.1);
+}
+
+.tag-search-input::placeholder {
+  color: #aaa;
+}
+
+/* Dropdown list */
+.tag-dropdown {
+  display: none;
+  position: absolute;
+  z-index: 200;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.tag-dropdown li {
+  padding: 9px 14px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+  transition: background-color 0.1s ease;
+}
+
+.tag-dropdown li:hover {
+  background-color: #f0fdf8;
+  color: #2a9d78;
+}
+
+/* Tags container */
+.tag-tags-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tag-empty-msg {
+  font-size: 0.85rem;
+  color: #aaa;
+  font-style: italic;
+  padding: 4px 2px;
+}
+
+/* Individual tag card */
+.tag-item {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tag-item:hover {
+  border-color: #c8e8df;
+  box-shadow: 0 2px 8px rgba(93, 206, 172, 0.08);
+}
+
+.tag-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tag-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.tag-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  color: #bbb;
+  padding: 0 2px;
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tag-remove:hover {
+  color: #e53e3e;
+}
+
+/* Tag detail inputs */
+.tag-details {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tag-detail-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  background: #fafafa;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.tag-detail-input:focus {
+  outline: none;
+  border-color: #5dceac;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(93, 206, 172, 0.08);
+}
+
+.tag-detail-input::placeholder {
+  color: #bbb;
+}
+
+.tag-adapter-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #555;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tag-adapter-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: #5dceac;
+  flex-shrink: 0;
+}
+
+.tag-suitability-select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.tag-suitability-select:focus {
+  outline: none;
+  border-color: #5dceac;
+  box-shadow: 0 0 0 3px rgba(93, 206, 172, 0.08);
 }
 
 /* Responsive Design */
