@@ -180,7 +180,7 @@ function _buildPlatformTag(name, onRemove, selectedMap) {
   return wrapper;
 }
 
-// ─── Functional need tag card ─────────────────────────────────────────────────
+// tags card
 function _buildNeedTag(name, onRemove, selectedMap) {
   const wrapper = document.createElement('div');
   wrapper.className = 'tag-item need-tag';
@@ -214,7 +214,7 @@ function _buildNeedTag(name, onRemove, selectedMap) {
   return wrapper;
 }
 
-// ─── Form Submission ──────────────────────────────────────────────────────────
+// form submission
 function initializeControllerFormSubmit() {
   const controllerForm = document.getElementById('controller-form');
   if (!controllerForm) return;
@@ -264,7 +264,7 @@ function initializeControllerFormSubmit() {
   });
 }
 
-// ─── Collect form data ────────────────────────────────────────────────────────
+// collect form data
 function collectControllerFormData() {
   const form = document.getElementById('controller-form');
 
@@ -305,14 +305,14 @@ function collectControllerFormData() {
   return { controller: controllerData, platforms, functional_needs };
 }
 
-// ─── Reset ────────────────────────────────────────────────────────────────────
+// reset the form
 function _resetControllerForm(form) {
   form.reset();
   document.getElementById('platform-search')?._reset();
   document.getElementById('need-search')?._reset();
 }
 
-// ─── Utility ──────────────────────────────────────────────────────────────────
+// utility
 function _esc(str) {
   return String(str)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
