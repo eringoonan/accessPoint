@@ -1,61 +1,9 @@
 import { getCurrentUser } from '../api/usersApi.js';
 import { getUserDetails, removeUserController } from '../api/profileDetailsApi.js'; 
 import { updateNavbar } from '../components/navbar.js';
+import { createControllerCard } from '../components/controllerCard.js';
 import User from '../models/User.js';
 import Controller from '../models/Controller.js';
-
-function createProfileControllerCard(controller) {
-    const card = document.createElement('div');
-    card.className = 'controller-card';
-
-    // Platform (first one only)
-    const platform = controller.platforms?.[0];
-
-    // First two features (mapped needs)
-    const features = controller.friendlyNeeds().slice(0, 2);
-
-    card.innerHTML = `
-        <div class="controller-image">
-            <img src="${controller.imageUrl}" 
-                 alt="${controller.name}"
-                 onerror="this.src='/assets/placeholder-controller.jpg'"> 
-        </div>
-
-        <div class="controller-content">
-            <div class="controller-header">
-                <h3>${controller.name}</h3>
-                <span class="controller-price">${controller.formattedPrice()}</span>
-            </div>
-
-            <div class="controller-features">
-                ${platform ? `<span class="feature-tag">${platform}</span>` : ''}
-                ${features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
-            </div>
-
-            <p class="controller-description">
-                ${controller.description()}
-            </p>
-
-            <div class="controller-actions">
-                <button class="btn btn-primary" 
-                        onclick="window.open('${controller.productUrl}', '_blank')">
-                    Learn More >
-                </button>
-
-                <button class="btn btn-secondary btn-remove" 
-                        data-controller-id="${controller.id}">
-                    Remove
-                </button>
-            </div>
-        </div>
-    `;
-
-    // Add event listener to remove button instead of using onclick
-    const removeBtn = card.querySelector('.btn-remove');
-    removeBtn.addEventListener('click', () => removeController(controller.id));
-
-    return card;
-}
 
 // Function to render controllers in the grid
 function renderControllers(controllers) {
@@ -91,7 +39,11 @@ function renderControllers(controllers) {
         try {
             const controller = new Controller(controllerData);
             console.log('Controller instance created:', controller);
-            const card = createProfileControllerCard(controller);
+            const card = createControllerCard(controller, {
+                secondaryButtonText: 'Remove',
+                secondaryButtonClass: 'btn btn-secondary btn-remove',
+                onSecondaryClick: removeController
+            });
             grid.appendChild(card);
         } catch (error) {
             console.error('Error creating controller card:', error, controllerData);

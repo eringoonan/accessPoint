@@ -3,6 +3,7 @@ import Controller from '../models/Controller.js';
 import { getAllControllers, saveUserController } from '../api/controllersApi.js';
 import { getAllConditions } from '../api/conditionsApi.js';
 import { FEATURE_MAP } from '../components/featureMapper.js';
+import { createControllerCard } from '../components/controllerCard.js';
 
 // Global state
 let allControllers = [];
@@ -12,57 +13,6 @@ let selectedPlatforms = [];
 let selectedFeatures = [];
 let requiresAdapter = 'all';
 let currentSort = 'relevance';
-
-// Function to create a controller card
-function createControllerCard(controller) {
-    const card = document.createElement('div');
-    card.className = 'controller-card';
-
-    const primaryPlatform = controller.getPrimaryPlatform();
-    const primaryPlatformDisplay = primaryPlatform 
-        ? `${primaryPlatform.name}${primaryPlatform.requires_adapter ? ' (adapter)' : ''}` 
-        : '';
-
-    const features = controller.friendlyNeeds().slice(0, 2);
-
-    card.innerHTML = `
-        <div class="controller-image">
-            <img src="${controller.imageUrl}" 
-                 alt="${controller.name}"
-                 onerror="this.src='/assets/placeholder-controller.jpg'"> 
-        </div>
-
-        <div class="controller-content">
-            <div class="controller-header">
-                <h3>${controller.name}</h3>
-                <span class="controller-price">${controller.formattedPrice()}</span>
-            </div>
-
-            <div class="controller-features">
-                ${primaryPlatformDisplay ? `<span class="feature-tag">${primaryPlatformDisplay}</span>` : ''}
-                ${features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
-            </div>
-
-            <p class="controller-description">
-                ${controller.description()}
-            </p>
-
-            <div class="controller-actions">
-                <button class="btn btn-primary" 
-                        onclick="window.open('${controller.productUrl}', '_blank')">
-                    Learn More >
-                </button>
-
-                <button class="btn btn-secondary" 
-                        onclick="saveController(${controller.id})">
-                    Save
-                </button>
-            </div>
-        </div>
-    `;
-
-    return card;
-}
 
 // Filter and sort controllers
 function filterAndSortControllers() {
@@ -178,7 +128,11 @@ function displayControllers(controllers) {
     }
 
     controllers.forEach(controller => {
-        const card = createControllerCard(controller);
+        const card = createControllerCard(controller, {
+            secondaryButtonText: 'Save',
+            secondaryButtonClass: 'btn btn-secondary',
+            onSecondaryClick: saveController
+        });
         grid.appendChild(card);
     });
 }

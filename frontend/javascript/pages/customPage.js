@@ -1,6 +1,7 @@
 // /javascript/pages/customPage.js
 import { initialiseControllerFilterForm, getLoadedConditions } from '../components/forms/controllerFilterForm.js';
 import { getAllControllers, saveUserController } from '../api/controllersApi.js';
+import { createControllerCard } from '../components/controllerCard.js';
 import Controller from '../models/Controller.js';
 
 // DOM references
@@ -197,55 +198,16 @@ function showResults(controllers) {
     `${controllers.length} controller${controllers.length !== 1 ? 's' : ''} matched your search`;
 
   // create new card for each returned controller
-  controllers.forEach(ctrl => resultsGrid.appendChild(createControllerCard(ctrl)));
+  controllers.forEach(controller => {
+      const card = createControllerCard(controller, {
+          secondaryButtonText: 'Save',
+          secondaryButtonClass: 'btn btn-secondary',
+          onSecondaryClick: saveController
+      });
+      resultsGrid.appendChild(card);
+  });
 
   resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// card builder
-function createControllerCard(controller) {
-  const card = document.createElement('div'); // create div for card
-  card.className = 'controller-card'; // assign class name
-
-  const primaryPlatform = controller.getPrimaryPlatform(); // get primary platform from controller object
-  const primaryPlatformDisplay = primaryPlatform
-    ? `${primaryPlatform.name}${primaryPlatform.requires_adapter ? ' (adapter)' : ''}`
-    : '';
-
-  // use feature mapper to assign friendly needs
-  const features = controller.friendlyNeeds().slice(0, 2);
-
-  // inner html of the card
-  card.innerHTML = `
-    <div class="controller-image">
-      <img src="${controller.imageUrl}"
-           alt="${controller.name}"
-           onerror="this.src='/assets/placeholder-controller.jpg'">
-    </div>
-    <div class="controller-content">
-      <div class="controller-header">
-        <h3>${controller.name}</h3>
-        <span class="controller-price">${controller.formattedPrice()}</span>
-      </div>
-      <div class="controller-features">
-        ${primaryPlatformDisplay ? `<span class="feature-tag">${primaryPlatformDisplay}</span>` : ''}
-        ${features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
-      </div>
-      <p class="controller-description">${controller.description()}</p>
-      <div class="controller-actions">
-        <button class="btn btn-primary"
-                onclick="window.open('${controller.productUrl}', '_blank')">
-          Learn More >
-        </button>
-        <button class="btn btn-secondary"
-                onclick="window.saveController(${controller.id})">
-          Save
-        </button>
-      </div>
-    </div>
-  `;
-
-  return card;
 }
 
 // use save controller function from controllersApi
