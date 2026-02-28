@@ -28,7 +28,6 @@ main h1 {
   font-size: 1rem;
 }
 
-/* Header / Navbar */
 header {
   position: fixed;
   top: 0;
@@ -71,7 +70,6 @@ header {
   margin-right: 10px;
 }
 
-/* Admin Container */
 .admin-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
@@ -79,7 +77,6 @@ header {
   margin-top: 20px;
 }
 
-/* Admin Box */
 .admin-box {
   background-color: #fff;
   border-radius: 12px;
@@ -97,7 +94,6 @@ header {
   padding-bottom: 12px;
 }
 
-/* Form Styling */
 .admin-form {
   display: flex;
   flex-direction: column;
@@ -145,7 +141,6 @@ header {
   color: #aaa;
 }
 
-/* Helper text */
 .helper-text {
   font-size: 0.85rem;
   color: #666;
@@ -153,7 +148,6 @@ header {
   margin-bottom: 8px;
 }
 
-/* Checkbox Expandable Grid */
 .checkbox-expandable-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -314,7 +308,6 @@ header {
   border-color: #5dceac;
 }
 
-/* Checkbox Grid (game platforms/features) */
 .checkbox-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -353,7 +346,6 @@ header {
   user-select: none;
 }
 
-/* Form Actions */
 .form-actions {
   display: flex;
   gap: 12px;
@@ -400,8 +392,6 @@ header {
   color: #444;
 }
 
-/* ── Tag Input Component ──────────────────────────────────────────────────── */
-
 .tag-input-wrapper {
   position: relative;
 }
@@ -427,7 +417,6 @@ header {
   color: #aaa;
 }
 
-/* Dropdown list */
 .tag-dropdown {
   display: none;
   position: absolute;
@@ -459,7 +448,6 @@ header {
   color: #2a9d78;
 }
 
-/* Tags container */
 .tag-tags-container {
   display: flex;
   flex-direction: column;
@@ -474,7 +462,6 @@ header {
   padding: 4px 2px;
 }
 
-/* Individual tag card */
 .tag-item {
   background: #fff;
   border: 1px solid #e8e8e8;
@@ -517,7 +504,6 @@ header {
   color: #e53e3e;
 }
 
-/* Tag detail inputs */
 .tag-details {
   margin-top: 8px;
   display: flex;
@@ -585,7 +571,6 @@ header {
   box-shadow: 0 0 0 3px rgba(93, 206, 172, 0.08);
 }
 
-/* Responsive Design */
 @media (max-width: 1200px) {
   .admin-container {
     grid-template-columns: 1fr;

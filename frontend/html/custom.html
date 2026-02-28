@@ -35,7 +35,19 @@
     </section>
 
     <section id="custom-filter-container" style="display:none;">
-      <!-- The controller or game form will be injected here -->
+    </section>
+
+    <section id="results-section" style="display:none;">
+      <div class="results-header">
+        <h2>Results</h2>
+        <p id="results-count" class="results-count"></p>
+      </div>
+
+      <p id="no-results-msg" class="no-results-msg" style="display:none;">
+        No controllers matched all of your selected requirements. Try removing some filters.
+      </p>
+
+      <div id="results-grid" class="controllers-grid"></div>
     </section>
   </main>
 

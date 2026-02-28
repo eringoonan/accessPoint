@@ -1,4 +1,4 @@
-/* Reset and global box-sizing */
+
 * {
     margin: 0;
     padding: 0;
@@ -13,7 +13,6 @@ body {
     margin: 0;
 }
 
-/* Header / Navbar */
 header {
     position: fixed;
     top: 0;
@@ -54,14 +53,12 @@ header {
     margin-right: 10px;
 }
 
-/* Main container */
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 40px 20px;
 }
 
-/* Page header */
 .page-header {
     text-align: center;
     margin-bottom: 50px;
@@ -78,7 +75,6 @@ header {
     color: #666;
 }
 
-/* Loading and error states */
 .loading {
     text-align: center;
     padding: 60px 20px;
@@ -96,7 +92,6 @@ header {
     text-align: center;
 }
 
-/* Controllers grid */
 .controllers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
@@ -104,7 +99,6 @@ header {
     margin-bottom: 40px;
 }
 
-/* Controller card */
 .controller-card {
     background: white;
     border-radius: 16px;
@@ -124,18 +118,16 @@ header {
     width: 100%;
     height: 280px;
     overflow: hidden;
-    padding: 0;              /* remove padding */
+    padding: 0;              
 }
 
-/* Image itself */
 .controller-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;      /* THIS is the key */
+    object-fit: cover;    
     display: block;
 }
 
-/* Card content */
 .controller-content {
     padding: 24px;
     display: flex;
@@ -166,7 +158,6 @@ header {
     margin-left: 12px;
 }
 
-/* Features section */
 .controller-features {
     display: flex;
     flex-wrap: wrap;
@@ -183,7 +174,6 @@ header {
     font-weight: 500;
 }
 
-/* Description */
 .controller-description {
     color: #666;
     font-size: 14px;
@@ -192,7 +182,6 @@ header {
     flex-grow: 1;
 }
 
-/* Action buttons */
 .controller-actions {
     display: flex;
     gap: 12px;
@@ -232,7 +221,6 @@ header {
     transform: translateY(-1px);
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
     .controllers-grid {
         grid-template-columns: 1fr;
@@ -270,7 +258,6 @@ header {
   color: #333;
 }
 
-/* Custom Select Dropdown */
 .custom-select {
   position: relative;
 }
@@ -485,7 +472,6 @@ header {
   color: #333;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .filters-section {
     grid-template-columns: 1fr;
@@ -523,14 +509,10 @@ header {
   }
 }
 
-/* Add these styles to your existing controllers.css */
-
-/* Condition-specific filter tag styling */
 .condition-tag {
-  background-color: #9c27b0; /* Purple for conditions */
+  background-color: #9c27b0;
 }
 
-/* Match badge on controller card */
 .match-badge {
   position: absolute;
   top: 10px;
@@ -545,10 +527,9 @@ header {
 }
 
 .controller-image {
-  position: relative; /* Needed for absolute positioning of badge */
+  position: relative; 
 }
 
-/* Update filter section for 4 filters */
 .filters-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -560,7 +541,6 @@ header {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* Responsive adjustments */
 @media (max-width: 1024px) {
   .filters-section {
     grid-template-columns: repeat(2, 1fr);

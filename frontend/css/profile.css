@@ -1,4 +1,4 @@
-/* Reset and global box-sizing */
+
 * {
     margin: 0;
     padding: 0;
@@ -9,11 +9,10 @@ body {
     font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
     background-color: #fffef5;
     min-height: 100vh;
-    padding-top: 100px; /* space for fixed navbar */
+    padding-top: 100px; 
     margin: 0;
 }
 
-/* Header / Navbar */
 header {
     position: fixed;
     top: 0;
@@ -54,7 +53,6 @@ header {
     margin-right: 10px;
 }
 
-/* Buttons */
 .btn {
     width: 100%;
     padding: 14px;
@@ -96,9 +94,6 @@ header {
     transform: translateY(-1px);
 }
 
-/* =====================
-   PROFILE SECTION
-===================== */
 .profile-section {
     padding: 40px 20px;
     background-color: #fffef5;
@@ -107,21 +102,19 @@ header {
 .profile-container {
     background: white;
     border-radius: 20px;
-    max-width: 500px;      /* fixed width for profile card */
-    margin: 0 auto;         /* center horizontally */
+    max-width: 500px;     
+    margin: 0 auto;        
     padding: 40px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     text-align: center;
 }
 
-/* Profile header */
 .profile-container h1 {
     font-size: 32px;
     color: #333;
     margin-bottom: 24px;
 }
 
-/* Profile card */
 .profile-card {
     display: flex;
     flex-direction: column;
@@ -132,7 +125,6 @@ header {
     margin-bottom: 20px;
 }
 
-/* Each row inside the profile card */
 .profile-row {
     display: flex;
     justify-content: space-between;
@@ -148,14 +140,12 @@ header {
     background-color: #f5f5f5;
 }
 
-/* Row labels */
 .profile-row h3 {
     font-size: 16px;
     color: #555;
     font-weight: 500;
 }
 
-/* Row values */
 .profile-row p {
     font-size: 16px;
     color: #333;
@@ -164,20 +154,16 @@ header {
     text-align: right;
 }
 
-/* =====================
-   GAMES / CONTROLLERS SECTION
-===================== */
 .games-section {
     padding: 40px 20px;
     background-color: #fffef5;
 }
 
 .games-container {
-    max-width: 1200px;      /* limit width of controllers section */
-    margin: 0 auto;         /* center the section */
+    max-width: 1200px;      
+    margin: 0 auto;       
 }
 
-/* Page header */
 .page-header {
     text-align: center;
     margin-bottom: 50px;
@@ -194,7 +180,6 @@ header {
     color: #666;
 }
 
-/* Loading and error states */
 .loading {
     text-align: center;
     padding: 60px 20px;
@@ -212,16 +197,14 @@ header {
     text-align: center;
 }
 
-/* Controllers grid */
 .controllers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: 30px;
-    justify-content: center;  /* center grid inside container */
+    justify-content: center; 
     margin: 0 auto 40px auto;
 }
 
-/* Controller card */
 .controller-card {
     background: white;
     border-radius: 16px;
@@ -281,7 +264,6 @@ header {
     margin-left: 12px;
 }
 
-/* Features section */
 .controller-features {
     display: flex;
     flex-wrap: wrap;
@@ -298,7 +280,6 @@ header {
     font-weight: 500;
 }
 
-/* Description */
 .controller-description {
     color: #666;
     font-size: 14px;
@@ -307,7 +288,6 @@ header {
     flex-grow: 1;
 }
 
-/* Action buttons */
 .controller-actions {
     display: flex;
     gap: 12px;
@@ -327,9 +307,6 @@ header {
     text-decoration: none;
 }
 
-/* =====================
-   RESPONSIVE DESIGN
-===================== */
 @media (max-width: 768px) {
     .controllers-grid {
         grid-template-columns: 1fr;
