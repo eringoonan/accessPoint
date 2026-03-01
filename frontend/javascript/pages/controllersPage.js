@@ -4,6 +4,7 @@ import { getAllControllers, saveUserController } from '../api/controllersApi.js'
 import { getAllConditions } from '../api/conditionsApi.js';
 import { FEATURE_MAP } from '../components/featureMapper.js';
 import { createControllerCard } from '../components/controllerCard.js';
+import { handleSaveController } from '../services/controllerService.js';
 
 // Global state
 let allControllers = [];
@@ -131,7 +132,7 @@ function displayControllers(controllers) {
         const card = createControllerCard(controller, {
             secondaryButtonText: 'Save',
             secondaryButtonClass: 'btn btn-secondary',
-            onSecondaryClick: saveController
+            onSecondaryClick: handleSaveController
         });
         grid.appendChild(card);
     });
@@ -507,24 +508,6 @@ function showError(message) {
     errorMessage.textContent = message;
     errorMessage.style.display = 'block';
 }
-
-// Save controller
-window.saveController = async function(controllerId) {
-    try {
-        await saveUserController(controllerId);
-        alert('Controller saved successfully!');
-    } catch (error) {
-        if (error.message === 'NOT_LOGGED_IN') {
-            alert('Please log in to save controllers');
-            window.location.href = '/html/signin.html'; 
-        } else if (error.message === 'Controller already saved') {
-            alert('You have already saved this controller!');
-        } else {
-            console.error('Error saving controller:', error);
-            alert('Failed to save controller. Please try again.');
-        }
-    }
-};
 
 // Load controllers and conditions from backend
 async function loadControllers() {

@@ -3,6 +3,7 @@ import { initialiseControllerFilterForm, getLoadedConditions } from '../componen
 import { getAllControllers, saveUserController } from '../api/controllersApi.js';
 import { createControllerCard } from '../components/controllerCard.js';
 import Controller from '../models/Controller.js';
+import { handleSaveController } from '../services/controllerService.js';
 
 // DOM references
 const filterContainer = document.getElementById('custom-filter-container');
@@ -202,28 +203,10 @@ function showResults(controllers) {
       const card = createControllerCard(controller, {
           secondaryButtonText: 'Save',
           secondaryButtonClass: 'btn btn-secondary',
-          onSecondaryClick: saveController
+          onSecondaryClick: handleSaveController
       });
       resultsGrid.appendChild(card);
   });
 
   resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
-// use save controller function from controllersApi
-window.saveController = async function(controllerId) {
-  try {
-    await saveUserController(controllerId);
-    alert('Controller saved successfully!');
-  } catch (error) {
-    if (error.message === 'NOT_LOGGED_IN') {
-      alert('Please log in to save controllers');
-      window.location.href = '/html/signin.html';
-    } else if (error.message === 'Controller already saved') {
-      alert('You have already saved this controller!');
-    } else {
-      console.error('Error saving controller:', error);
-      alert('Failed to save controller. Please try again.');
-    }
-  }
-};

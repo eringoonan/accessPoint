@@ -2,6 +2,7 @@ import { getCurrentUser } from '../api/usersApi.js';
 import { getUserDetails, removeUserController } from '../api/profileDetailsApi.js'; 
 import { updateNavbar } from '../components/navbar.js';
 import { createControllerCard } from '../components/controllerCard.js';
+import { handleRemoveController } from '../services/controllerService.js';
 import User from '../models/User.js';
 import Controller from '../models/Controller.js';
 
@@ -42,7 +43,12 @@ function renderControllers(controllers) {
             const card = createControllerCard(controller, {
                 secondaryButtonText: 'Remove',
                 secondaryButtonClass: 'btn btn-secondary btn-remove',
-                onSecondaryClick: removeController
+                onSecondaryClick: async (id) => {
+                    const success = await handleRemoveController(id);
+                    if (success) {
+                        loadProfileDetails(); // reload the profile after card is removed
+                    }
+                }
             });
             grid.appendChild(card);
         } catch (error) {
@@ -51,33 +57,6 @@ function renderControllers(controllers) {
     });
 
     console.log('Finished rendering controllers');
-}
-
-async function removeController(controllerId) {
-    if (!confirm('Are you sure you want to remove this controller from your saved list?')) {
-        return;
-    }
-    
-    try {
-        await removeUserController(controllerId);
-        
-        // Show success message
-        alert('Controller removed successfully!');
-        
-        // Reload the controllers list
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            const data = await getCurrentUser(token);
-            if (data.loggedIn) {
-                const user = new User(data.user);
-                const controllerData = await getUserDetails(user.id);
-                renderControllers(controllerData);
-            }
-        }
-    } catch (err) {
-        console.error('Error removing controller:', err);
-        alert('Failed to remove controller. Please try again.');
-    }
 }
 
 async function loadProfileDetails(event){
