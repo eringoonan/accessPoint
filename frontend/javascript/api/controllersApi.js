@@ -102,3 +102,19 @@ export async function createController(controllerData) {
     throw error;
   }
 }
+
+export async function searchControllers(filters) {
+  const response = await fetch(`${API_BASE_URL}/controllers/search`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(filters)
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to search controllers');
+  }
+
+  return response.json();
+}

@@ -4,6 +4,7 @@ const db = require('../db');
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware')
 const router = express.Router();
+const controllerService = require('../services/controllerService');
 
 console.log("controllers router loaded");
 
@@ -334,5 +335,16 @@ router.post('/', authMiddleware, adminMiddleware, (req, res) => {
     }
   });
 });
+
+router.post('/search', async (req, res) => {
+  try {
+    const results = await controllerService.searchControllers(req.body);
+    res.json(results);
+  } catch (err) {
+    console.error('Search failed:', err);
+    res.status(500).json({ error: 'Search failed' });
+  }
+});
+
 
 module.exports = router;
