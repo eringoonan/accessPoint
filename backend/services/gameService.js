@@ -1,10 +1,9 @@
 const gameRepository = require('../repositories/gameRepository');
 
 const SUITABILITY_SCORE = {
-  excellent: 4,
-  good: 3,
-  fair: 2,
-  limited: 1
+  excellent: 3,
+  good: 2,
+  basic: 1
 };
 
 async function getGames() {

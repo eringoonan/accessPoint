@@ -64,4 +64,27 @@ router.get('/test-enrich', async (req, res) => {
   }
 });
 
+// Temporary test route for search
+router.get('/test-search', async (req, res) => {
+  try {
+    // Use request body as filter input, or provide defaults for testing
+    const filters = Object.keys(req.body || {}).length
+      ? req.body
+      : {
+          features: [{ value: "Subtitles", level: 3 }],
+          conditions: [],
+          genre: "Souls-like",
+          platform: "PlayStation 5",
+          mustSupportAllFeatures: true
+        };
+
+    const results = await gameService.searchGames(filters);
+
+    res.json(results);
+  } catch (err) {
+    console.error('Game search test failed:', err);
+    res.status(500).json({ error: 'Game search test failed' });
+  }
+});
+
 module.exports = router;

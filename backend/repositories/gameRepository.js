@@ -88,9 +88,8 @@ async function findFilteredGames(filters) {
     params.push(genre);
   }
 
-  // PLATFORM FILTER (single select)
+  // PLATFORM FILTER
   if (platform) {
-
     sql += `
       AND g.game_id IN (
         SELECT gp.game_id
@@ -99,7 +98,6 @@ async function findFilteredGames(filters) {
         WHERE p.platform_name = ?
       )
     `;
-
     params.push(platform);
   }
 
@@ -112,11 +110,12 @@ async function findFilteredGames(filters) {
 
       sql += `
         AND g.game_id IN (
-          SELECT gf.game_id
-          FROM game_features gf
-          JOIN features f ON gf.feature_id = f.feature_id
+          SELECT gaf.game_id
+          FROM game_accessibility_features gaf
+          JOIN accessibility_features f 
+            ON gaf.feature_id = f.feature_id
           WHERE f.feature_name IN (?)
-          GROUP BY gf.game_id
+          GROUP BY gaf.game_id
           HAVING COUNT(DISTINCT f.feature_name) = ?
         )
       `;
@@ -128,9 +127,10 @@ async function findFilteredGames(filters) {
 
       sql += `
         AND g.game_id IN (
-          SELECT gf.game_id
-          FROM game_features gf
-          JOIN features f ON gf.feature_id = f.feature_id
+          SELECT gaf.game_id
+          FROM game_accessibility_features gaf
+          JOIN accessibility_features f
+            ON gaf.feature_id = f.feature_id
           WHERE f.feature_name IN (?)
         )
       `;
