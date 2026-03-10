@@ -6,6 +6,7 @@ const controllersRoutes = require("./routes/controllers");
 const authRoutes = require("./routes/auth");
 const profileDetailsRoutes = require('./routes/profileDetails');
 const conditionRoutes = require('./routes/conditions');
+const gameRoutes = require('./routes/games');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +38,7 @@ app.use("/controllers", controllersRoutes);
 app.use("/auth", authRoutes);
 app.use('/profileDetails', profileDetailsRoutes);
 app.use('/conditions', conditionRoutes);
+app.use('/games', gameRoutes);
 
 
 // ---- START SERVER ----
