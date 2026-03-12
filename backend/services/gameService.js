@@ -6,12 +6,12 @@ const SUITABILITY_SCORE = {
   basic: 1
 };
 
-async function getGames() {
-  const games = await gameRepository.findGames();
+async function getGames(limit, offset) {
+
+  const games = await gameRepository.findGames(limit, offset);
 
   return games;
 }
-
 // function to enrich existing games with their information
 async function enrichGames(games) {
 

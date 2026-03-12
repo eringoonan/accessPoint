@@ -46,3 +46,19 @@ export async function enrichGames(games) {
     }
 
 }
+
+// function to search games w/ filters
+export async function searchGames(filters) {
+    const response = await fetch(`${API_BASE_URL}/games/search`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filters)
+    });
+
+    if (!response.ok){
+        throw new Error('Failed to search games');
+    }
+    return response.json();
+}

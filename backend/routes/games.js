@@ -8,14 +8,20 @@ const gameService = require('../services/gameService');
 console.log("Games Route Loaded");
 
 // get games by ID
-router.get('/', async (req, res) =>{
-    try{
-       const games = await gameService.getGames();
-       res.json(games);
-    } catch (err) {
-        console.error("Game Retrieval Failed", err);
-        res.status(500).json({ error: 'Retrieval failed' });
-    }
+router.get('/', async (req, res) => {
+  try {
+
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = parseInt(req.query.offset) || 0;
+
+    const games = await gameService.getGames(limit, offset);
+
+    res.json(games);
+
+  } catch (err) {
+    console.error("Game Retrieval Failed", err);
+    res.status(500).json({ error: 'Retrieval failed' });
+  }
 });
 
 // enrich already existing games

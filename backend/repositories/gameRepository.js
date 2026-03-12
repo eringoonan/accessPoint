@@ -10,7 +10,8 @@ function query(sql, params = []) {
 }
 
 // get all games
-async function findGames() {
+async function findGames(limit = 20, offset = 0) {
+
   const sql = `
     SELECT 
       g.*,
@@ -18,9 +19,11 @@ async function findGames() {
     FROM games g
     JOIN genres ge
       ON g.genre_id = ge.genre_id
+    LIMIT ?
+    OFFSET ?
   `;
 
-  return await query(sql);
+  return await query(sql, [limit, offset]);
 }
 
 
