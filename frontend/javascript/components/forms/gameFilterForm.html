@@ -1,0 +1,66 @@
+<div id="game-filter-form">
+  <h2>Custom Game Search</h2>
+
+  <!-- Platforms -->
+  <fieldset class="filter-fieldset">
+    <legend>Preferred Platforms</legend>
+    <div class="searchable-dropdown" id="platforms-dropdown">
+      <input type="text" class="dropdown-search" placeholder="Search platforms..." autocomplete="off" />
+      <ul class="dropdown-list" id="platforms-list"></ul>
+    </div>
+    <div class="selected-tags" id="platforms-selected"></div>
+    <div class="fieldset-footer">
+      <button type="button" class="clear-section-btn" data-target="platforms-dropdown">Clear</button>
+    </div>
+  </fieldset>
+
+  <fieldset class="filter-fieldset">
+  <legend>Game Genre</legend>
+
+  <div class="searchable-dropdown" id="genre-dropdown">
+    <input type="text" class="dropdown-search" placeholder="Search genres..." autocomplete="off" />
+    <ul class="dropdown-list" id="genre-list"></ul>
+  </div>
+
+  <div class="selected-tags" id="genre-selected"></div>
+
+  <div class="fieldset-footer">
+    <button type="button" class="clear-section-btn" data-target="genre-dropdown">Clear</button>
+  </div>
+</fieldset>
+
+  <!-- Accessibility Features -->
+  <fieldset class="filter-fieldset">
+    <legend>Accessibility Features</legend>
+    <div class="searchable-dropdown" id="features-dropdown">
+      <input type="text" class="dropdown-search" placeholder="Search accessibility features..." autocomplete="off" />
+      <ul class="dropdown-list" id="features-list"></ul>
+    </div>
+    <div class="selected-tags" id="features-selected"></div>
+    <div class="fieldset-footer">
+        <label class="must-all-label">
+            <input type="checkbox" id="must-support-all"> Must support all selected features
+      </label>
+      <button type="button" class="clear-section-btn" data-target="features-dropdown">Clear</button>
+    </div>
+  </fieldset>
+
+  <!-- Medical Conditions -->
+  <fieldset class="filter-fieldset">
+    <legend>Medical Conditions <span class="optional-label">(optional)</span></legend>
+    <button type="button" class="fill-from-profile" id="fill-from-profile-btn">Fill from profile</button>
+    <div class="searchable-dropdown" id="conditions-dropdown">
+      <input type="text" class="dropdown-search" placeholder="Search conditions..." autocomplete="off" />
+      <ul class="dropdown-list" id="conditions-list"></ul>
+    </div>
+    <div class="selected-tags" id="conditions-selected"></div>
+    <div class="fieldset-footer">
+      <button type="button" class="clear-section-btn" data-target="conditions-dropdown">Clear</button>
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="button" id="clear-all-btn">Clear All</button>
+    <button type="submit" id="game-search-submit">Search</button>
+  </div>
+</div>

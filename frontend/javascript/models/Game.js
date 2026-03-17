@@ -1,71 +1,109 @@
-// game class
-
 class Game {
-    constructor({
-        game_id,
-        title,
-        developer,
-        genre,
-        release_date,
-        product_url,
-        image_url,
-        primary_platform,
-        platforms,
-        features,
-    }) {
-        this.id = game_id;
-        this.title = title;
-        this.developer = developer;
-        this.genre = genre;
+  constructor(data) {
+    this.id = data.game_id;
+    this.name = data.title;
+    this.developer = data.developer;
+    this.genre = data.genre_name || null;
+    this.releaseDate = data.release_date ? new Date(data.release_date) : null;
+    this.productUrl = data.official_website || data.store_url || '#';
+    this.imageUrl = data.cover_image_url || '/assets/placeholder-controller.jpg';
+    this.score = data.score || 0;
 
-        this.releaseDate = release_date ? new Date(release_date) : null;
+    // Normalize platforms and features
+    this.platforms = this._normalizePlatforms(data.platforms || []);
+    this.features = this._normalizeFeatures(data.features || []);
+  }
 
-        this.product_url = product_url || '#';;
-        this.image_url = image_url || '/assets/placeholder-controller.jpg';
-
-        this.primary_platform = primary_platform;
-        this.platforms = this._normalizePlatforms(platforms);
-        this.features = this._normalizeFeatures(features);
-    }
-
-      //turn platforms into objects
   _normalizePlatforms(platforms) {
-    if (!Array.isArray(platforms)) return [];
-    
-    return platforms.map(p => {
-      // if already an object return
-      if (typeof p === 'object' && p.name) {
-        return p;
-      }
-      // if string convert to object with proper attributes
-      if (typeof p === 'string') {
+    return platforms
+      .map(p => {
+        if (!p) return null;
         return {
-          name: p,
-          compatibility_notes: null,
+          id: p.platform_id,
+          name: p.platform_name,
+          manufacturer: p.manufacturer,
+          type: p.platform_type,
+          compatibility_notes: p.notes || null,
           requires_adapter: false
         };
-      }
-      return null;
-    }).filter(p => p !== null);
+      })
+      .filter(Boolean);
   }
 
-  // turn needs into objects
   _normalizeFeatures(features) {
-    if (!Array.isArray(features)) return [];
-    
-    return features.map(f => {
-      // if already an object return
-      if (typeof f === 'object' && f.name) {
-        return f;
-      }
-      // if string convert to object with proper attributes
-      if (typeof f === 'string') {
+    return features
+      .map(f => {
+        if (!f) return null;
         return {
-          name: f,
-          suitability: null
+          id: f.feature_id,
+          name: f.feature_name,
+          description: f.description || null,
+          implementation_quality: f.implementation_quality || null,
+          notes: f.notes || null
         };
-      }
-      return null;
-    }).filter(f => f !== null);
+      })
+      .filter(Boolean);
+  }
+
+  // Use first platform in the array as primary
+  getPrimaryPlatform() {
+    if (!this.platforms || !this.platforms.length) return null;
+    return this.platforms[0];
+  }
+
+  getPlatformNames() {
+    return this.platforms.map(p => p.name);
+  }
+
+  getNativePlatforms() {
+    return this.platforms.filter(p => !p.requires_adapter);
+  }
+
+  getAdapterPlatforms() {
+    return this.platforms.filter(p => p.requires_adapter);
+  }
+
+  getFeatureNames() {
+    return this.features.map(f => f.name);
+  }
+
+  formattedReleaseDate() {
+    if (!this.releaseDate) return 'N/A';
+    return this.releaseDate.toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  formattedPrice() {
+    if (this.price === 0 || this.price === null || this.price === undefined) {
+      return 'Price N/A';
+    }
+    return `£${this.price.toFixed(2)}`;
+  }
+
+  description() {
+    return `${this.developer} game${
+      this.releaseDate ? ` - Released ${this.formattedReleaseDate()}` : ''
+    }`;
+  }
+
+  openProductPage() {
+    if (this.productUrl && this.productUrl !== '#') {
+      window.open(this.productUrl, '_blank');
+    } else {
+      alert('Product page not available!');
+    }
+  }
+
+  debug() {
+    console.log(`🎮 Game: ${this.name} by ${this.developer}`);
+    console.log(`   Platforms: ${this.platforms.map(p => p.name).join(', ')}`);
+    console.log(`   Features: ${this.features.map(f => f.name).join(', ')}`);
+    console.log(`   Genre: ${this.genre}`);
+    console.log(`   Score: ${this.score}`);
   }
 }
+
+export default Game;

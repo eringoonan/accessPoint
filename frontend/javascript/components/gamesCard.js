@@ -1,66 +1,82 @@
-// gamesCard.js
+// components/gamesCard.js
 export function createGamesCard(game, options = {}) {
-    const {
-        secondaryButtonText = 'Save',
-        secondaryButtonClass = 'btn btn-secondary',
-        onSecondaryClick = null
-    } = options;
+  const {
+    secondaryButtonText = 'Save',
+    secondaryButtonClass = 'btn btn-secondary',
+    onSecondaryClick = null,
+    overridePlatform = null
+  } = options;
 
-    const card = document.createElement('div');
-    card.className = 'game-card';
+  const card = document.createElement('div');
+  card.className = 'game-card';
 
-    const primaryPlatform = game.getPrimaryPlatform();
-    const primaryPlatformDisplay = primaryPlatform 
-        ? `${primaryPlatform.name}${primaryPlatform.requires_adapter ? ' (adapter)' : ''}` 
-        : '';
+  // Use override platform if provided, otherwise fallback to model method
+  const primaryPlatform = overridePlatform || 
+    (game.getPrimaryPlatform ? game.getPrimaryPlatform() : null);
 
-    const features = game.friendlyNeeds().slice(0, 2);
+  const primaryPlatformDisplay = primaryPlatform
+    ? `${primaryPlatform.name}${primaryPlatform.requires_adapter ? ' (adapter)' : ''}`
+    : '';
 
-    card.innerHTML = `
-        <div class="game-image">
-            <img src="${game.imageUrl}" 
-                 alt="${game.name}"
-                 onerror="this.src='/assets/placeholder-controller.jpg'"> 
-        </div>
+  // Genre
+  const genreDisplay = game.genre || '';
 
-        <div class="game-content">
-            <div class="game-header">
-                <h3>${game.name}</h3>
-                <span class="game-price">${game.formattedPrice()}</span>
-            </div>
+  // Raw features (limit to 2)
+  const features = game.getFeatureNames
+    ? game.getFeatureNames().slice(0, 2)
+    : [];
 
-            <div class="game-features">
-                ${primaryPlatformDisplay ? `<span class="feature-tag">${primaryPlatformDisplay}</span>` : ''}
-                ${features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
-            </div>
+  card.innerHTML = `
+    <div class="game-image">
+      <img src="${game.imageUrl || game.image_url}" 
+           alt="${game.name || game.title}"
+           onerror="this.src='/assets/placeholder-controller.jpg'"> 
+    </div>
 
-            <p class="game-description">
-                ${game.description()}
-            </p>
+    <div class="game-content">
+      <div class="game-header">
+        <h3>${game.name || game.title}</h3>
+        <span class="game-price">
+          ${game.formattedPrice ? game.formattedPrice() : 'Price N/A'}
+        </span>
+      </div>
 
-            <div class="game-actions">
-                <button class="btn btn-primary learn-more-btn">
-                    Learn More >
-                </button>
+      <div class="game-features">
+        ${primaryPlatformDisplay ? `<span class="feature-tag">${primaryPlatformDisplay}</span>` : ''}
+        ${genreDisplay ? `<span class="feature-tag">${genreDisplay}</span>` : ''}
+        ${features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
+      </div>
 
-                <button class="${secondaryButtonClass} secondary-btn">
-                    ${secondaryButtonText}
-                </button>
-            </div>
-        </div>
-    `;
+      <p class="game-description">
+        ${game.description 
+          ? game.description() 
+          : `${game.developer || ''} ${game.genre || ''}`}
+      </p>
 
-    // Learn More button
-    card.querySelector('.learn-more-btn')
-        .addEventListener('click', () => {
-            window.open(game.productUrl, '_blank');
-        });
+      <div class="game-actions">
+        <button class="btn btn-primary learn-more-btn">
+          Learn More >
+        </button>
 
-    // Secondary button (Save / Remove / etc.)
-    if (onSecondaryClick) {
-        card.querySelector('.secondary-btn')
-            .addEventListener('click', () => onSecondaryClick(game.id));
-    }
+        <button class="${secondaryButtonClass} secondary-btn">
+          ${secondaryButtonText}
+        </button>
+      </div>
+    </div>
+  `;
 
-    return card;
+  // Learn more button
+  card.querySelector('.learn-more-btn')
+    .addEventListener('click', () => {
+      if (game.openProductPage) game.openProductPage();
+      else if (game.product_url) window.open(game.product_url, '_blank');
+    });
+
+  // Secondary button (e.g. Save)
+  if (onSecondaryClick) {
+    card.querySelector('.secondary-btn')
+      .addEventListener('click', () => onSecondaryClick(game.id));
+  }
+
+  return card;
 }

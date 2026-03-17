@@ -7,6 +7,8 @@ const authRoutes = require("./routes/auth");
 const profileDetailsRoutes = require('./routes/profileDetails');
 const conditionRoutes = require('./routes/conditions');
 const gameRoutes = require('./routes/games');
+const featureRoutes = require('./routes/features');
+const genreRoutes = require('./routes/genre');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,6 +41,8 @@ app.use("/auth", authRoutes);
 app.use('/profileDetails', profileDetailsRoutes);
 app.use('/conditions', conditionRoutes);
 app.use('/games', gameRoutes);
+app.use('/features', featureRoutes);
+app.use('/genre', genreRoutes);
 
 
 // ---- START SERVER ----
