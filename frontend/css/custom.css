@@ -548,3 +548,85 @@ main {
     grid-template-columns: 1fr;
   }
 }
+
+.controller-card {
+  background: white;
+  border-radius: 16px;
+  border: 2px solid #e0e0e0;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 340px;
+  height: 500px;
+}
+
+.controller-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.controller-image {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+}
+
+.controller-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.controller-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.controller-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.controller-header h3 {
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+}
+
+.controller-price {
+  font-size: 18px;
+  color: #333;
+  font-weight: 700;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+.controller-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.controller-description {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.controller-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
