@@ -1,18 +1,25 @@
 const gameRepository = require('../repositories/gameRepository');
 
-const SUITABILITY_SCORE = {
-  excellent: 3,
+const IMPORTANCE_TO_MIN_QUALITY = {
+  1: 1,
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 3
+};
+
+const QUALITY_RANK = {
+  basic: 1,
   good: 2,
-  basic: 1
+  excellent: 3
 };
 
 async function getGames(limit, offset) {
-  const games = await gameRepository.findGames(limit, offset);
-  return games;
+  return await gameRepository.findGames(limit, offset);
 }
 
 async function enrichGames(games) {
-  if (!games || !games.length) return games;
+  if (!games?.length) return games;
 
   const gameIds = games.map(g => g.game_id);
 
@@ -20,12 +27,13 @@ async function enrichGames(games) {
   const features = await gameRepository.findFeaturesForGames(gameIds);
 
   const platformMap = {};
+  const featureMap = {};
+
   platforms.forEach(p => {
     if (!platformMap[p.game_id]) platformMap[p.game_id] = [];
     platformMap[p.game_id].push(p);
   });
 
-  const featureMap = {};
   features.forEach(f => {
     if (!featureMap[f.game_id]) featureMap[f.game_id] = [];
     featureMap[f.game_id].push(f);
@@ -40,81 +48,160 @@ async function enrichGames(games) {
 }
 
 async function searchGames(filters) {
-  const { features = [], conditions = [], genre = null, mustSupportAllFeatures = true } = filters;
+  const {
+    features = [],
+    conditions = [],
+    genre = null,
+    mustSupportAllFeatures = true
+  } = filters;
 
-  // 1. hard filter games in DB
-  let games = await gameRepository.findFilteredGames(filters);
-
-  // 2. enrich with platforms and features
-  games = await enrichGames(games);
-
-  // 3. build combined feature weight map
-  const combinedFeatures = new Map();
-
-  // add direct features
-  features.forEach(sel => {
-    combinedFeatures.set(sel.value, sel.level ?? 3);
+  // 1. DB filter (NO feature filtering here)
+  let games = await gameRepository.findFilteredGames({
+    ...filters,
+    features: []
   });
 
-  // expand conditions -> functional_needs -> features
+  // 2. enrich
+  games = await enrichGames(games);
+
+  // 3. build combined feature map
+  const combinedFeatures = new Map();
+  const conditionFeatureSet = new Set();
+
+  // direct features
+  features.forEach(sel => {
+    const importance = sel.level ?? 3;
+    const minQualityRank = IMPORTANCE_TO_MIN_QUALITY[importance] ?? 1;
+
+    combinedFeatures.set(sel.value, {
+      weight: importance,
+      minQualityRank,
+      isDirect: true
+    });
+  });
+
+  // map conditions to features
   if (conditions.length) {
     const conditionNames = conditions.map(c => c.value);
 
-    const conditionMappings = await gameRepository.getFeaturesForConditions(conditionNames);
+    const conditionMappings =
+      await gameRepository.getFeaturesForConditions(conditionNames);
 
     conditionMappings.forEach(mapping => {
       const userCondition = conditions.find(c => c.value === mapping.condition_name);
       const severity = userCondition?.level ?? 1;
+
       const weight = mapping.importanceWeight * severity;
 
-      combinedFeatures.set(
-        mapping.feature_name,
-        (combinedFeatures.get(mapping.feature_name) ?? 0) + weight
-      );
+      const existing = combinedFeatures.get(mapping.feature_name);
+
+      combinedFeatures.set(mapping.feature_name, {
+        weight: (existing?.weight ?? 0) + weight,
+        minQualityRank: existing?.minQualityRank ?? 1,
+        isDirect: existing?.isDirect ?? false
+      });
+
+      conditionFeatureSet.add(mapping.feature_name);
     });
   }
 
-  // 4. score games against combined feature map
+  // 4. scoring + HARD FILTERING
   let scored = games.map(game => {
+
     let score = 0;
 
-    combinedFeatures.forEach((weight, featureName) => {
+    let matchedDirectFeatures = 0;
+    const totalDirectFeatures = features.length;
+
+    let matchedConditionFeatures = 0;
+    const totalConditionFeatures = conditionFeatureSet.size;
+
+    combinedFeatures.forEach(({ weight, minQualityRank, isDirect }, featureName) => {
+
       const gameFeature = game.features.find(
         f => f.feature_name === featureName
       );
 
       if (!gameFeature) return;
 
-      const suitability =
-        SUITABILITY_SCORE[gameFeature.implementation_quality?.toLowerCase()] ?? 1;
+      const qualityRank =
+        QUALITY_RANK[gameFeature.implementation_quality?.toLowerCase()] ?? 1;
 
-      score += weight * suitability;
+      // remove if below quality threshold
+      if (qualityRank < minQualityRank) return;
+
+      if (isDirect) matchedDirectFeatures++;
+
+      if (conditionFeatureSet.has(featureName)) {
+        matchedConditionFeatures++;
+      }
+
+      score += weight * qualityRank;
     });
 
-    return { ...game, score };
-  });
+    // hard filter - direct feature logic
+    if (features.length > 0) {
+      if (mustSupportAllFeatures) {
+        if (matchedDirectFeatures < totalDirectFeatures) return null;
+      } else {
+        if (matchedDirectFeatures === 0) return null;
+      }
+    }
 
-  // 5. if conditions were selected, drop games with no matching features
-  if (conditions.length > 0) {
+    // hard filter - condition logic takes precedence 
+    if (conditions.length > 0 && totalConditionFeatures > 0) {
+
+      const matchRatio = matchedConditionFeatures / totalConditionFeatures;
+
+      const totalSeverity = conditions.reduce(
+        (sum, c) => sum + (c.level ?? 1), 0
+      );
+
+      const avgSeverity = totalSeverity / conditions.length;
+      const normalizedSeverity = (avgSeverity - 1) / 4;
+
+      const MIN_MATCH = 0.3;
+      const MAX_MATCH = 0.8;
+
+      const requiredMatch =
+        MIN_MATCH + (MAX_MATCH - MIN_MATCH) * normalizedSeverity;
+
+      if (matchRatio < requiredMatch) return null;
+    }
+
+    return { ...game, score };
+
+  }).filter(Boolean);
+
+  // 5. dynamic threshold (secondary filter)
+  if (conditions.length > 0 && scored.length > 0) {
+
     const highestScore = Math.max(...scored.map(g => g.score));
 
-    const MIN_THRESHOLD = 0.15;
-    const MAX_THRESHOLD = 0.6;
+    if (highestScore > 0) {
 
-    const totalSeverity = conditions.reduce((sum, c) => sum + (c.level ?? 1), 0);
-    const avgSeverity = totalSeverity / conditions.length;
+      const totalSeverity = conditions.reduce(
+        (sum, c) => sum + (c.level ?? 1), 0
+      );
 
-    const normalizedSeverity = (avgSeverity - 1) / 4;
+      const avgSeverity = totalSeverity / conditions.length;
+      const normalizedSeverity = (avgSeverity - 1) / 4;
 
-    const dynamicThresholdRatio =
-      MIN_THRESHOLD + (MAX_THRESHOLD - MIN_THRESHOLD) * normalizedSeverity;
+      const MIN_THRESHOLD = 0.15;
+      const MAX_THRESHOLD = 0.6;
 
-    const THRESHOLD = highestScore * dynamicThresholdRatio;
+      const dynamicThresholdRatio =
+        MIN_THRESHOLD + (MAX_THRESHOLD - MIN_THRESHOLD) * normalizedSeverity;
 
-    scored = scored.filter(g => g.score >= THRESHOLD);
+      const THRESHOLD = highestScore * dynamicThresholdRatio;
+
+      scored = scored.filter(
+        g => g.score > 0 && g.score >= THRESHOLD
+      );
+    }
   }
 
-  // 6. sort best -> worst
+  // 6. sort
   scored.sort((a, b) => b.score - a.score);
 
   return scored;

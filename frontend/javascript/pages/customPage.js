@@ -107,6 +107,9 @@ async function runControllerSearch() {
 
 async function runGameSearch() {
 
+  const btn = document.getElementById('must-support-all-features-btn');
+  console.log('btn found:', btn, 'active:', btn?.dataset.active);
+
   const platformFieldset   = document.querySelector('#platforms-dropdown')?.closest('fieldset');
   const featuresFieldset   = document.querySelector('#features-dropdown')?.closest('fieldset');
   const conditionsFieldset = document.querySelector('#conditions-dropdown')?.closest('fieldset');
@@ -121,9 +124,8 @@ async function runGameSearch() {
     alert('Please select at least one platform, feature, or condition before searching.');
     return;
   }
-
   const mustSupportAllFeatures =
-    document.getElementById('must-support-all-features-btn')?.dataset.active === 'true';
+    document.getElementById('must-support-all')?.checked ?? true;
 
   const payload = {
     platform: selectedPlatforms[0]?.value || null,
