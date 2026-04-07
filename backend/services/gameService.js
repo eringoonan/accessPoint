@@ -55,7 +55,7 @@ async function searchGames(filters) {
     mustSupportAllFeatures = true
   } = filters;
 
-  // 1. DB filter (NO feature filtering here)
+  // 1. DB filter 
   let games = await gameRepository.findFilteredGames({
     ...filters,
     features: []
