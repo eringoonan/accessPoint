@@ -44,6 +44,7 @@ router.post('/enrich', async (req, res) => {
   }
 });
 
+// search games
 router.post('/search', async (req, res) => {
   try {
     const results = await gameService.searchGames(req.body);
@@ -54,6 +55,7 @@ router.post('/search', async (req, res) => {
   }
 });
 
+// test routes
 router.get('/test-enrich', async (req, res) => {
   try {
 
@@ -73,7 +75,6 @@ router.get('/test-enrich', async (req, res) => {
 // Temporary test route for search
 router.get('/test-search', async (req, res) => {
   try {
-    // Use request body as filter input, or provide defaults for testing
     const filters = Object.keys(req.body || {}).length
       ? req.body
       : {

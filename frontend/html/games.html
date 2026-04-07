@@ -1,35 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Access Point</title>
-  <link rel="stylesheet" href="/css/games.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games - AccessPoint</title>
+    <link rel="stylesheet" href="/css/games.css" />
 </head>
 <body>
-  <header id="navbar">
-    <nav class="navbar">
-      <div class="navbar-left">
-        <img src="" alt="Logo" class="navbar-logo" />
-        <a href ="/index.html">AccessPoint</a>
-      </div>
-      <div class="navbar-right">
-        <a id="admin-link" href="/html/admin.html" style="display:none;">Admin</a>
-        <a href="/index.html">Home</a>
-        <a href="/html/controllers.html">Controllers</a>
-        <a href="/html/games.html">Games</a>
-        <a href="/html/custom.html">Custom Search</a>
-        <a href="/html/signup.html" id="auth-link">Sign Up</a>
-      </div>
-    </nav>
-  </header>
+    <header id="navbar">
+        <nav class="navbar">
+            <div class="navbar-left">
+                <img src="" alt="Logo" class="navbar-logo" />
+                <a href="/index.html">AccessPoint</a>
+            </div>
+            <div class="navbar-right">
+                <a id="admin-link" href="/html/admin.html" style="display:none;">Admin</a>
+                <a href="/index.html">Home</a>
+                <a href="/html/controllers.html">Controllers</a>
+                <a href="/html/games.html">Games</a>
+                <a href="/html/custom.html">Custom Search</a>
+                <a href="/html/signup.html" id="auth-link">Sign Up</a>
+            </div>
+        </nav>
+    </header>
 
-  <main>
-    <h1>Home</h1>
-    <p>Welcome to Access Point.</p>
-  </main>
+    <main class="container">
+        <div class="page-header">
+            <h1>Accessible Games</h1>
+            <p>Browse games with accessibility features</p>
+        </div>
 
+        <div class="filters-section">
+            <div class="filter-group">
+                <label>Medical Conditions</label>
+                <div class="custom-select">
+                    <button type="button" class="select-button" id="condition-filter-btn">
+                        <span class="select-text">Select Conditions</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M2 4l4 4 4-4"/>
+                        </svg>
+                    </button>
+                    <div class="select-dropdown" id="condition-dropdown">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Search conditions..." id="condition-search">
+                        </div>
+                        <div class="dropdown-options" id="condition-options"></div>
+                        <div class="dropdown-actions">
+                            <button type="button" class="clear-btn" id="clear-conditions">Clear All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <script type="module" src="/javascript/pages/gamesPage.js"></script>
-  <script type="module" src="/javascript/components/navbar.js" defer></script>
+            <div class="filter-group">
+                <label>Platforms</label>
+                <div class="custom-select">
+                    <button type="button" class="select-button" id="platform-filter-btn">
+                        <span class="select-text">All Platforms</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M2 4l4 4 4-4"/>
+                        </svg>
+                    </button>
+                    <div class="select-dropdown" id="platform-dropdown">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Search platforms..." id="platform-search">
+                        </div>
+                        <div class="dropdown-options" id="platform-options"></div>
+                        <div class="dropdown-actions">
+                            <button type="button" class="clear-btn" id="clear-platforms">Clear All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Accessibility Features</label>
+                <div class="custom-select">
+                    <button type="button" class="select-button" id="feature-filter-btn">
+                        <span class="select-text">All Features</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M2 4l4 4 4-4"/>
+                        </svg>
+                    </button>
+                    <div class="select-dropdown" id="feature-dropdown">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Search features..." id="feature-search">
+                        </div>
+                        <div class="dropdown-options" id="feature-options"></div>
+                        <div class="dropdown-actions">
+                            <button type="button" class="clear-btn" id="clear-features">Clear All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Genre</label>
+                <div class="custom-select">
+                    <button type="button" class="select-button" id="genre-filter-btn">
+                        <span class="select-text">All Genres</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                            <path d="M2 4l4 4 4-4"/>
+                        </svg>
+                    </button>
+                    <div class="select-dropdown" id="genre-dropdown">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Search genres..." id="genre-search">
+                        </div>
+                        <div class="dropdown-options" id="genre-options"></div>
+                        <div class="dropdown-actions">
+                            <button type="button" class="clear-btn" id="clear-genre">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label for="sort-filter">Sort By</label>
+                <select id="sort-filter" class="sort-select">
+                    <option value="default">Default</option>
+                    <option value="release-new">Release: Newest First</option>
+                    <option value="release-old">Release: Oldest First</option>
+                    <option value="name-az">Name: A–Z</option>
+                    <option value="name-za">Name: Z–A</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="active-filters" id="active-filters" style="display: none;"></div>
+
+        <div id="loading" class="loading">
+            <p>Loading games...</p>
+        </div>
+
+        <div id="error-message" class="error-message" style="display: none;"></div>
+
+        <div id="games-grid" class="games-grid"></div>
+
+        <div class="show-more-container">
+            <button id="show-more-btn" class="show-more-btn" style="display: none;">
+                Show More Games
+            </button>
+        </div>
+    </main>
+
+    <script type="module" src="/javascript/pages/gamesPage.js"></script>
+    <script type="module" src="/javascript/components/navbar.js" defer></script>
 </body>
 </html>

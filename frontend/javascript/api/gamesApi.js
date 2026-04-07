@@ -5,12 +5,12 @@ function getAccessToken() {
 }
 
 // returns games from db
-export async function getGames(){
+export async function getGames(limit = 20, offset = 0) {
     try {
-        const response = await fetch(`${API_BASE_URL}/games`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        });
+        const response = await fetch(
+            `${API_BASE_URL}/games?limit=${limit}&offset=${offset}`
+        );
+
         const data = await response.json();
 
         if (!response.ok) {

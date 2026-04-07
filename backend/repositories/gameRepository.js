@@ -1,5 +1,6 @@
 const db = require('../db');
 
+// query to the db function
 function query(sql, params = []) {
   return new Promise((resolve, reject) => {
     db.query(sql, params, (err, results) => {
@@ -67,6 +68,7 @@ async function findFeaturesForGames(gameIds) {
   return await query(sql, [gameIds]);
 }
 
+// find games using filters
 async function findFilteredGames(filters) {
 
   const {
@@ -85,14 +87,15 @@ async function findFilteredGames(filters) {
 
   const params = [];
 
-  // GENRE FILTER
+  // genre filter
   if (genre) {
     sql += ` AND ge.genre_name = ? `;
     params.push(genre);
   }
 
-  // PLATFORM FILTER
+  // platform filter
   if (platform) {
+    // add to the original sql
     sql += `
       AND g.game_id IN (
         SELECT gp.game_id
@@ -104,13 +107,14 @@ async function findFilteredGames(filters) {
     params.push(platform);
   }
 
-  // FEATURE FILTER
+  // feature filter
   if (features.length) {
 
     const featureNames = features.map(f => f.value);
 
     if (mustSupportAllFeatures) {
 
+      // add to the original sql
       sql += `
         AND g.game_id IN (
           SELECT gaf.game_id
@@ -145,8 +149,8 @@ async function findFilteredGames(filters) {
   return await query(sql, params);
 }
 
+// connect features to conditions
 async function getFeaturesForConditions(conditionNames = []) {
-
   if (!conditionNames.length) return [];
 
   const placeholders = conditionNames.map(() => '?').join(',');
@@ -162,19 +166,14 @@ async function getFeaturesForConditions(conditionNames = []) {
         ELSE 1
       END AS importanceWeight
     FROM conditions c
-
     JOIN condition_needs cn
       ON c.condition_id = cn.condition_id
-
-    JOIN needs n
-      ON cn.need_id = n.need_id
-
+    JOIN functional_needs fn
+      ON cn.need_id = fn.need_id
     JOIN feature_functional_needs ffn
-      ON n.need_id = ffn.need_id
-
+      ON fn.need_id = ffn.need_id
     JOIN accessibility_features f
       ON ffn.feature_id = f.feature_id
-
     WHERE c.condition_name IN (${placeholders})
   `;
 

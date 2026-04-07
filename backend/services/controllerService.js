@@ -7,7 +7,6 @@ const SUITABILITY_SCORE = {
   limited: 1
 };
 
-
 async function searchControllers(filters) {
   const { needs = [], conditions = [], mustSupportAll = true } = filters;
 
@@ -20,22 +19,23 @@ async function searchControllers(filters) {
   // 3. combined needs weight map
   const combinedNeeds = new Map();
 
-  // add the direct needs
+  // add direct needs
   needs.forEach(sel => {
     combinedNeeds.set(sel.value, sel.level ?? 3);
   });
 
-  // expand by adding conditions to the needs (if selected)
+  // expand conditions -> needs
   if (conditions.length) {
     const conditionNames = conditions.map(c => c.value);
-    const conditionMappings = await controllerRepository.getNeedsForConditions(conditionNames); // run function to get the needs for conditions
+
+    const conditionMappings =
+      await controllerRepository.getNeedsForConditions(conditionNames);
 
     conditionMappings.forEach(mapping => {
-      // multiply by user-assigned severity if provided
       const userCondition = conditions.find(c => c.value === mapping.condition_name);
       const severity = userCondition?.level ?? 1;
 
-      // weight = importance x severity
+      // weight = importance × severity
       const weight = mapping.importanceWeight * severity;
 
       combinedNeeds.set(
@@ -45,19 +45,21 @@ async function searchControllers(filters) {
     });
   }
 
-  // 4. score the controllers
-  const scored = controllers.map(ctrl => {
+  // 4. score controllers
+  let scored = controllers.map(ctrl => {
     let score = 0;
 
     combinedNeeds.forEach((weight, needName) => {
       const ctrlNeed = ctrl.needs.find(n => n.name === needName);
       if (!ctrlNeed) return;
 
-      const suitability = SUITABILITY_SCORE[ctrlNeed.suitability?.toLowerCase()] ?? 1;
+      const suitability =
+        SUITABILITY_SCORE[ctrlNeed.suitability?.toLowerCase()] ?? 1;
+
       score += weight * suitability;
     });
 
-    // optionally add bonus for native vs adapter platforms if needed
+    // platform bonus
     if (filters.platforms?.length) {
       filters.platforms.forEach(sel => {
         const platform = ctrl.platforms.find(p => p.name === sel.value);
@@ -69,7 +71,36 @@ async function searchControllers(filters) {
     return { ...ctrl, score };
   });
 
-  // 5. sort descending
+  // 5. apply dynamic threshold (only if conditions selected)
+  if (conditions.length > 0) {
+
+    const highestScore = Math.max(...scored.map(c => c.score));
+
+    // avoid breaking if all scores are 0
+    if (highestScore > 0) {
+
+      // min and map thresholds
+      const MIN_THRESHOLD = 0.15;
+      const MAX_THRESHOLD = 0.6;
+
+      // use MAX severity 
+      const maxSeverity = Math.max(...conditions.map(c => c.level ?? 1));
+
+      // normalize 1–5 -> 0–1
+      const normalizedSeverity = (maxSeverity - 1) / 4;
+
+      // non-linear scaling (more aggressive at high severity)
+      const dynamicThresholdRatio =
+        MIN_THRESHOLD +
+        (MAX_THRESHOLD - MIN_THRESHOLD) * Math.pow(normalizedSeverity, 1.5);
+
+      const THRESHOLD = highestScore * dynamicThresholdRatio;
+
+      scored = scored.filter(c => c.score >= THRESHOLD);
+    }
+  }
+
+  // 6. sort best -> worst
   scored.sort((a, b) => b.score - a.score);
 
   return scored;
