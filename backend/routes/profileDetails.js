@@ -3,9 +3,10 @@ const db = require('../db');
 const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 
-router.get('/:userId', (req, res) => {
-    const userId = req.params.userId;
-    
+router.get('/', authMiddleware, (req, res) => {
+
+    const userId = req.user.id; 
+
     const sql = `
         SELECT 
             uc.user_controller_id,
@@ -37,12 +38,11 @@ router.get('/:userId', (req, res) => {
     `;
 
     db.query(sql, [userId], (err, results) => {
-        if(err) {
+        if (err) {
             console.error('DB error fetching profile details:', err);
             return res.status(500).json({ error: 'Failed to fetch details' });
         }
 
-        // Process results to convert comma-separated strings to arrays
         const processedResults = results.map(controller => ({
             ...controller,
             platforms: controller.platforms ? controller.platforms.split(',') : [],

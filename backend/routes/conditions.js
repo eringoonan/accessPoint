@@ -134,4 +134,68 @@ router.get('/with-features', (req, res) => {
   });
 });
 
+// function to save user condition to the db
+router.post('/add-user-conditions', authMiddleware, (req, res) => {
+
+  const user_id = req.user.id;
+  const { condition_id, severity_level } = req.body;
+
+  if (!condition_id) {
+    return res.status(400).json({ error: "condition_id is required" });
+  }
+
+  const checkQuery = `
+    SELECT 1 FROM user_conditions 
+    WHERE user_id = ? AND condition_id = ?
+  `;
+
+  db.query(checkQuery, [user_id, condition_id], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "DB error" });
+    }
+
+    if (results.length > 0) {
+      return res.status(409).json({ error: "Condition already saved" });
+    }
+
+    // insert only after check
+    const insertQuery = `
+      INSERT INTO user_conditions (user_id, condition_id, severity_level) 
+      VALUES (?, ?, ?)
+    `;
+
+    db.query(insertQuery, [user_id, condition_id, severity_level], (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to save condition" });
+      }
+
+      res.status(201).json({
+        message: "Condition saved successfully",
+        user_condition_id: result.insertId
+      });
+    });
+  });
+});
+
+// function to retrieve user conditions from db
+router.get('/get-user-conditions', authMiddleware, (req, res) => {
+
+  const user_id = req.user.id;
+
+  const sql = `
+    SELECT *
+    FROM user_conditions
+    WHERE user_id = ?
+  `;
+
+  db.query(sql, [user_id], (err, results) => {
+    if (err) {
+      console.error('DB error while fetching conditions:', err);
+      return res.status(500).json({ error: 'Failed to fetch details' });
+    }
+
+    res.status(200).json({ conditions: results });
+  });
+}); 
+
 module.exports = router;
