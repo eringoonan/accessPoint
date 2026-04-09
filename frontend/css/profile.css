@@ -487,3 +487,25 @@ header {
     margin-top: 8px;
     min-height: 20px;
 }
+
+.btn-remove-condition {
+    padding: 8px 14px;
+    background-color: #fcebeb;
+    color: #a32d2d;
+    border: 1.5px solid #d64545;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 110px;          
+    text-align: center;
+    flex: 0 0 110px;  
+    flex-shrink: 0;
+}
+
+.btn-remove-condition:hover {
+    background-color: #d64545;
+    color: #fff;
+    transform: translateY(-1px);
+}

@@ -126,3 +126,32 @@ export async function addUserCondition(conditionId, severityLevel = 1) {
 
     return await response.json();
 }
+
+export async function removeUserCondition(conditionId) {
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+        throw new Error('No authentication token found');
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/conditions/remove/${conditionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        console.error('Error removing condition:', err);
+        throw err;
+    }
+}

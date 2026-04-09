@@ -205,4 +205,40 @@ router.get('/get-user-conditions', authMiddleware, (req, res) => {
   });
 });
 
+// function to remove user condition from db
+router.delete('/remove/:conditionId', authMiddleware, (req, res) => {
+  const conditionId = req.params.conditionId;
+  const userId = req.user.id;
+
+  const checkSql = 'SELECT * FROM user_conditions WHERE condition_id = ? AND user_id = ?';
+
+  db.query(checkSql, [conditionId, userId], (err, results) => {
+    if(err) {
+      console.error('DB error checking condition:', err);
+      return res.status(500).json({ error: 'Failed to verify condition ownership'});
+    }
+    if (results.length === 0 ) {
+      return res.status(403).json({ error: 'You do not have permission to remove this condition'});
+    }
+
+    const deleteSql = 'DELETE FROM user_conditions WHERE condition_id = ? AND user_id = ?';
+
+    db.query(deleteSql, [conditionId, userId], (err, result) =>{
+      if(err) {
+        console.error('DB error removing condition:', err);
+        return res.status(500).json({ error: 'Failed to remove condition'});
+      }
+
+      if (result.affectedRows ===0) {
+        return res.status(404).json({ error: 'Condition not found'});
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Condition removed successfully',
+        conditionId: conditionId
+      });
+    });
+  });
+});
 module.exports = router;

@@ -1,4 +1,4 @@
-import { getUserConditions, addUserCondition, getAllConditions } from '../api/conditionsApi.js';
+import { getUserConditions, addUserCondition, getAllConditions, removeUserCondition } from '../api/conditionsApi.js';
 
 export function createUserConditionsSection(type = 'view') {
     const container = document.createElement('div');
@@ -30,14 +30,43 @@ async function renderView(container) {
         conditions.forEach(c => {
             const card = document.createElement('div');
             card.className = 'condition-card';
-            card.innerHTML = `
-                <strong>${c.condition_name}</strong>
-                <span class="severity-badge severity-${c.severity_level}">
-                    ${c.severity_level.charAt(0).toUpperCase() + c.severity_level.slice(1)}
-                </span>
-            `;
-            grid.appendChild(card);
-        });
+
+            const name = document.createElement('strong');
+            name.textContent = c.condition_name;
+
+            const severity = document.createElement('span');
+            severity.className = `severity-badge severity-${c.severity_level}`;
+            severity.textContent =
+                c.severity_level.charAt(0).toUpperCase() + c.severity_level.slice(1);
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'btn btn-danger btn-remove-condition';
+            removeBtn.textContent = 'Remove';
+
+            // ✅ Remove handler
+            removeBtn.addEventListener('click', async () => {
+                const confirmDelete = confirm(`Remove "${c.condition_name}"?`);
+
+                if (!confirmDelete) return;
+
+                try {
+                    await removeUserCondition(c.condition_id);
+
+                    // Refresh view
+                    renderView(container);
+
+                } catch (err) {
+                    alert('Failed to remove condition');
+                    console.error(err);
+                }
+            });
+
+    card.appendChild(name);
+    card.appendChild(severity);
+    card.appendChild(removeBtn);
+
+    grid.appendChild(card);
+});
 
         container.innerHTML = `<h3>Your Conditions</h3>`;
         container.appendChild(grid);
@@ -94,7 +123,7 @@ async function renderAdd(container) {
 
         btn.addEventListener('click', async () => {
             try {
-                // ← severity is a string enum now, not parseInt
+                // severity is a string enum now, not parseInt
                 await addUserCondition(select.value, severitySelect.value);
                 msg.textContent = 'Condition added!';
                 msg.style.color = '#0f6e56';
