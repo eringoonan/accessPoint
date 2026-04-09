@@ -1,10 +1,14 @@
 const API_BASE_URL = 'http://localhost:3000';
 
 export async function getUserDetails() {
+    const token = localStorage.getItem('accessToken');
     try {
         const response = await fetch(`${API_BASE_URL}/profileDetails`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+             },
         });
         
         if (!response.ok) {

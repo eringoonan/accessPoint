@@ -177,16 +177,23 @@ router.post('/add-user-conditions', authMiddleware, (req, res) => {
   });
 });
 
-// function to retrieve user conditions from db
 router.get('/get-user-conditions', authMiddleware, (req, res) => {
 
   const user_id = req.user.id;
 
   const sql = `
-    SELECT *
-    FROM user_conditions
-    WHERE user_id = ?
-  `;
+      SELECT 
+        uc.user_condition_id,
+        uc.user_id,
+        uc.condition_id,
+        uc.severity_level,
+        c.condition_name,
+        c.description
+      FROM user_conditions uc
+      LEFT JOIN conditions c
+        ON uc.condition_id = c.condition_id
+      WHERE uc.user_id = ?
+    `;
 
   db.query(sql, [user_id], (err, results) => {
     if (err) {
@@ -196,6 +203,6 @@ router.get('/get-user-conditions', authMiddleware, (req, res) => {
 
     res.status(200).json({ conditions: results });
   });
-}); 
+});
 
 module.exports = router;

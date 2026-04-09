@@ -1,3 +1,5 @@
+// backend/routes/profileDetails.js
+
 const express = require('express');
 const db = require('../db'); 
 const authMiddleware = require("../middleware/authMiddleware");
@@ -60,7 +62,7 @@ router.delete('/remove/:controllerId', authMiddleware, (req, res) => {
     const controllerId = req.params.controllerId;
     const userId = req.user.id; // Get user ID from JWT token (verified by authMiddleware)
     
-    // First, verify that this controller belongs to this user
+    // verify user has the controller
     const checkSql = 'SELECT * FROM user_controllers WHERE controller_id = ? AND user_id = ?';
     
     db.query(checkSql, [controllerId, userId], (err, results) => {
@@ -73,7 +75,7 @@ router.delete('/remove/:controllerId', authMiddleware, (req, res) => {
             return res.status(403).json({ error: 'You do not have permission to remove this controller' });
         }
         
-        // If we get here, the user owns this controller - proceed with deletion
+        // proceed to deletion
         const deleteSql = 'DELETE FROM user_controllers WHERE controller_id = ? AND user_id = ?';
         
         db.query(deleteSql, [controllerId, userId], (err, result) => {

@@ -3,6 +3,7 @@ import { getUserDetails, removeUserController } from '../api/profileDetailsApi.j
 import { updateNavbar } from '../components/navbar.js';
 import { createControllerCard } from '../components/controllerCard.js';
 import { handleRemoveController } from '../services/controllerService.js';
+import { createUserConditionsSection } from '../components/userConditionsSection.js';
 import User from '../models/User.js';
 import Controller from '../models/Controller.js';
 
@@ -76,7 +77,7 @@ async function loadProfileDetails(event){
     try {
         const data = await getCurrentUser(token);
         console.log('User data:', data);
-        console.log('data.user:', data.user); // ADD THIS LINE
+        console.log('data.user:', data.user); 
         
         if (!data.loggedIn){
             localStorage.removeItem('accessToken');
@@ -84,8 +85,8 @@ async function loadProfileDetails(event){
             return;      
         }
         const user = new User(data.user);
-        console.log('User instance:', user); // ADD THIS LINE
-        console.log('User ID:', user.id); // ADD THIS LINE
+        console.log('User instance:', user); 
+        console.log('User ID:', user.id); 
         
         // Update profile card info
         document.getElementById('profile-name').textContent = user.name || 'N/A';
@@ -95,7 +96,7 @@ async function loadProfileDetails(event){
         // Fetch user's saved controllers
         try {
             console.log('Fetching controllers for user:', user.id);
-            const controllerData = await getUserDetails(user.id);
+            const controllerData = await getUserDetails();
             console.log('Controller data received:', controllerData);
             renderControllers(controllerData);
         } catch (err){
@@ -126,4 +127,33 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM Content Loaded');
     loadProfileDetails();
     updateNavbar();
+});
+
+const conditionsButtonGroup = document.createElement('div');
+conditionsButtonGroup.className = 'conditions-button-group';
+
+const viewBtn = document.createElement('button');
+viewBtn.id = 'view-conditions-btn';
+viewBtn.className = 'btn btn-conditions-view';
+viewBtn.textContent = 'View Conditions';
+
+const addBtn = document.createElement('button');
+addBtn.id = 'add-condition-btn';
+addBtn.className = 'btn btn-conditions-add';
+addBtn.textContent = 'Add Condition';
+
+conditionsButtonGroup.appendChild(viewBtn);
+conditionsButtonGroup.appendChild(addBtn);
+
+const profileGrid = document.getElementById('profile-details-grid');
+profileGrid.parentElement.insertBefore(conditionsButtonGroup, profileGrid);
+
+viewBtn.addEventListener('click', () => {
+    profileGrid.innerHTML = '';
+    profileGrid.appendChild(createUserConditionsSection('view'));
+});
+
+addBtn.addEventListener('click', () => {
+    profileGrid.innerHTML = '';
+    profileGrid.appendChild(createUserConditionsSection('add'));
 });

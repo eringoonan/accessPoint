@@ -1,5 +1,3 @@
-import { post } from "../../../backend/routes/conditions";
-
 const API_BASE_URL = 'http://localhost:3000';
 
 function getAccessToken() {
