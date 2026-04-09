@@ -1,6 +1,5 @@
-// /javascript/components/forms/controllerFilterForm.js
 import { getAllControllers } from '../../api/controllersApi.js';
-import { getAllConditions } from '../../api/conditionsApi.js';
+import { getAllConditions, getUserConditions } from '../../api/conditionsApi.js';
 import { FEATURE_MAP } from '../featureMapper.js';
 
 // create mapped labels with feature mapper
@@ -14,6 +13,9 @@ let _loadedConditions = [];
 export function getLoadedConditions() {
   return _loadedConditions;
 }
+
+// Severity label -> numeric level mapping
+const SEVERITY_TO_LEVEL = { mild: 1, moderate: 3, severe: 5 };
 
 // initialise controller filter form
 export async function initialiseControllerFilterForm() {
@@ -59,6 +61,39 @@ export async function initialiseControllerFilterForm() {
     document.getElementById('controller-search-submit')?.addEventListener('click', () => {
       document.getElementById('controller-filter-form')
         ?.dispatchEvent(new CustomEvent('filter-search', { bubbles: true }));
+    });
+
+    // "Fill from profile" button
+    document.getElementById('fill-from-profile-btn')?.addEventListener('click', async () => {
+      try {
+        const userConditions = await getUserConditions();
+
+        const conditionsFieldset = document.getElementById('conditions-dropdown')
+          ?.closest('fieldset');
+
+        if (!conditionsFieldset || typeof conditionsFieldset.__addItem !== 'function') {
+          console.warn('Conditions fieldset not ready');
+          return;
+        }
+
+        userConditions.forEach(uc => {
+          // Match the user's condition against the loaded conditions list
+          const match = _loadedConditions.find(
+            c => c.condition_id === uc.condition_id || c.condition_name === uc.condition_name
+          );
+          if (!match) return;
+
+          const level = SEVERITY_TO_LEVEL[uc.severity?.toLowerCase()] ?? uc.severity_level ?? 1;
+          conditionsFieldset.__addItem(match.condition_name, level);
+        });
+
+      } catch (err) {
+        if (err.message === 'NOT_LOGGED_IN') {
+          alert('Please log in to fill conditions from your profile.');
+        } else {
+          console.error('Failed to load user conditions:', err);
+        }
+      }
     });
 
   } catch (error) {
@@ -113,9 +148,9 @@ function _wireDropdown(dropdownContainerId, listId, selectedAreaId, items, label
   }
 
   // adds item to selected map
-  function addItem(rawValue) {
+  function addItem(rawValue, level) {
     if (selected.has(rawValue)) return;
-    selected.set(rawValue, { level: levelConfig ? levelConfig.defaultVal : null }); // stores raw value and given level
+    selected.set(rawValue, { level: level ?? (levelConfig ? levelConfig.defaultVal : null) }); // stores raw value and given level
     renderTags();
   }
 
@@ -177,12 +212,13 @@ function _wireDropdown(dropdownContainerId, listId, selectedAreaId, items, label
     setTimeout(() => { list.style.display = 'none'; }, 150);
   });
 
-  // Expose selections and clear on the fieldset
+  // Expose selections, clear, and addItem on the fieldset
   const fieldset = container.closest('fieldset');
   if (fieldset) {
-    fieldset.__getSelections  = () =>
+    fieldset.__getSelections   = () =>
       Array.from(selected.entries()).map(([value, data]) => ({ value, level: data.level }));
     fieldset.__clearSelections = () => { selected.clear(); renderTags(); };
+    fieldset.__addItem         = (rawValue, level) => addItem(rawValue, level);
   }
 
   // initialise clear button logic for each section

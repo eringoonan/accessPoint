@@ -1,5 +1,4 @@
-// /javascript/components/forms/gameFilterForm.js
-import { getAllConditions } from '../../api/conditionsApi.js';
+import { getAllConditions, getUserConditions } from '../../api/conditionsApi.js';
 import { getGames, enrichGames } from '../../api/gamesApi.js';
 import { getAllFeatures } from "../../api/featuresApi.js";
 import { getAllGenres } from "../../api/genreApi.js";
@@ -20,6 +19,9 @@ export function getLoadedFeatures() {
 export function getLoadedGenres() {
   return _loadedGenres;
 }
+
+// Severity label -> numeric level mapping
+const SEVERITY_TO_LEVEL = { mild: 1, moderate: 3, severe: 5 };
 
 // initialise game filter form
 export async function initialiseGameFilterForm() {
@@ -135,6 +137,38 @@ export async function initialiseGameFilterForm() {
           ?.dispatchEvent(new CustomEvent("filter-search", { bubbles: true }));
       });
 
+    // "Fill from profile" button
+    document.getElementById("fill-from-profile-btn")?.addEventListener("click", async () => {
+      try {
+        const userConditions = await getUserConditions();
+
+        const conditionsFieldset = document.getElementById("conditions-dropdown")
+          ?.closest("fieldset");
+
+        if (!conditionsFieldset || typeof conditionsFieldset.__addItem !== "function") {
+          console.warn("Conditions fieldset not ready");
+          return;
+        }
+
+        userConditions.forEach(uc => {
+          const match = _loadedConditions.find(
+            c => c.condition_id === uc.condition_id || c.condition_name === uc.condition_name
+          );
+          if (!match) return;
+
+          const level = SEVERITY_TO_LEVEL[uc.severity?.toLowerCase()] ?? uc.severity_level ?? 1;
+          conditionsFieldset.__addItem(match.condition_name, level);
+        });
+
+      } catch (err) {
+        if (err.message === "NOT_LOGGED_IN") {
+          alert("Please log in to fill conditions from your profile.");
+        } else {
+          console.error("Failed to load user conditions:", err);
+        }
+      }
+    });
+
   } catch (error) {
     console.error("Error initialising game filter form:", error);
   }
@@ -188,11 +222,11 @@ function _wireDropdown(dropdownContainerId, listId, selectedAreaId, items, label
     list.style.display = "block";
   }
 
-  function addItem(rawValue) {
+  function addItem(rawValue, level) {
     if (selected.has(rawValue)) return;
 
     selected.set(rawValue, {
-      level: levelConfig ? levelConfig.defaultVal : null
+      level: level ?? (levelConfig ? levelConfig.defaultVal : null)
     });
 
     renderTags();
@@ -283,6 +317,8 @@ function _wireDropdown(dropdownContainerId, listId, selectedAreaId, items, label
       selected.clear();
       renderTags();
     };
+
+    fieldset.__addItem = (rawValue, level) => addItem(rawValue, level);
   }
 
   const clearBtn = fieldset?.querySelector(".clear-section-btn");
