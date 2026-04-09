@@ -87,9 +87,9 @@ export async function initialiseControllerFilterForm() {
           conditionsFieldset.__addItem(match.condition_name, level);
         });
 
-      } catch (err) {
-        if (err.message === 'NOT_LOGGED_IN') {
-          alert('Please log in to fill conditions from your profile.');
+        } catch (err) {
+          if (err.message === 'NOT_LOGGED_IN') {
+            window.location.href = '/html/signin.html';
         } else {
           console.error('Failed to load user conditions:', err);
         }
