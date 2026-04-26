@@ -36,8 +36,6 @@ export function createGamesCard(game, options = {}) {
     <div class="game-content">
       <div class="game-header">
         <h3>${game.name || game.title}</h3>
-        <span class="game-price">
-          ${game.formattedPrice ? game.formattedPrice() : 'Price N/A'}
         </span>
       </div>
 
