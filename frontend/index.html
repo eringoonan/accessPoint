@@ -10,7 +10,7 @@
   <header id="navbar">
     <nav class="navbar">
       <div class="navbar-left">
-        <img src="" alt="Logo" class="navbar-logo" />
+        <img src="/assets/aplogotrans.png" alt="Logo" class="navbar-logo" />
         <a href ="/index.html">AccessPoint</a>
       </div>
       <div class="navbar-right">
@@ -24,12 +24,60 @@
     </nav>
   </header>
 
-  <main>
-    <h1>Home</h1>
-    <p>Welcome to Access Point.</p>
-  </main>
+<main>
 
-  <!-- Dynamic JS to update Sign Up → Profile -->
+  <section class="hero">
+    <h1>Welcome to Access Point</h1>
+    <p>The hub for discovering accessible games and controllers suitable for you.</p>
+  </section>
+
+  <section class="about">
+    <h2>About Access Point</h2>
+    <p>
+      Access Point is an accessibility hub for gamers of all kinds. From here you can browse games and controllers by specific accessibility features, platforms and genres, recieve personalised recommendations based on your specific wants and needs and view detail feature rundowns for games and controllers!
+    </p>
+  </section>
+
+  <section class="features">
+    <h2>Explore</h2>
+
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <h3>Controllers</h3>
+        <p>
+          Browse a range of accessible and adaptive controllers by functional needs, platforms and price.
+        </p>
+        <a href="/html/controllers.html" class="feature-button">View Controllers</a>
+      </div>
+
+      <div class="feature-card">
+        <h3>Games</h3>
+        <p>
+          Discover games sorted by accessibility features, platforms and genres.
+        </p>
+        <a href="/html/games.html" class="feature-button">Browse Games</a>
+      </div>
+
+      <div class="feature-card">
+        <h3>Custom Search</h3>
+        <p>
+          Use advanced filters to find games and controllers tailored to your accessibility requirements.
+        </p>
+        <a href="/html/custom.html" class="feature-button">Start Searching</a>
+      </div>
+
+      <div class="feature-card">
+        <h3>Your Profile</h3>
+        <p>
+          Create an account to save accessibility needs and controllers to your profile.
+        </p>
+        <a href="/html/signup.html" class="feature-button">Get Started</a>
+      </div>
+
+    </div>
+  </section>
+</main>
   <script type="module" src="/javascript/pages/homePage.js"></script>
   <script type="module" src="/javascript/components/navbar.js" defer></script>
   <script type="module" src="/javascript/components/accessibility.js"></script>
